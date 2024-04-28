@@ -1,0 +1,59 @@
+@import "../styles/root.scss";
+.nav-bg {
+  position: fixed;
+  top: 30px;
+  left: 0;
+  right: 0 !important;
+  width: 100%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+
+  nav {
+    background-color: #38304866;
+    backdrop-filter: blur(10px);
+    max-width: 1220px;
+    width: 90%;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    margin: 0 auto;
+    border-radius: 50px;
+
+    .nav-left {
+      display: flex;
+      gap: 50px;
+    }
+    li,
+    a,
+    .signin-btn {
+      color: $font-color-white;
+      text-decoration: none;
+      list-style: none;
+      font-size: 1.1rem;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.7;
+        transform: scale(1.05) !important;
+      }
+    }
+    .nav-right {
+      a {
+        &:hover {
+          opacity: 0.7;
+          transform: scale(1.1) !important;
+        }
+      }
+    }
+  }
+}
+.scrolled {
+  top: 0;
+  background-color: rgba(56, 48, 72, 0.4);
+  box-shadow: 9px 12px 41px -5px #2c253866;
+}

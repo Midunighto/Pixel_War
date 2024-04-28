@@ -1,0 +1,59 @@
+@import "../styles/root.scss";
+
+h1,
+h2,
+p {
+  color: $font-color-white;
+  font-family: $primary-font;
+}
+h1 {
+  margin-bottom: 20px;
+}
+h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+p {
+  font-size: 1rem;
+}
+
+.about-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 50px;
+
+  .about {
+    display: flex;
+    gap: 20px;
+  }
+  .buttons-wrapper {
+    display: flex;
+    height: 60px;
+    width: 100%;
+    gap: 30px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+.align-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rules-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 70%;
+  align-items: end;
+  .rules,
+  .bonus2 {
+    text-align: right;
+    width: 80%;
+  }
+  .bonus1 {
+    text-align: left;
+    width: 100%;
+  }
+}

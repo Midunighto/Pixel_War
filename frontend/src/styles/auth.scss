@@ -1,0 +1,113 @@
+@import "../styles/root.scss";
+
+/* INSCRIPTION */
+.signup-container {
+  display: flex;
+  margin-bottom: 50px;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  gap: 20px;
+  .wrapper {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+  }
+}
+
+.link-button {
+  background-color: transparent;
+  color: $font-color-white;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 0 auto;
+  &:hover {
+    opacity: 80%;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $font-color-white;
+  gap: 40px;
+  .group-form {
+    display: flex;
+    gap: 20px;
+    /*       min-width: 400px;  */
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    label {
+      text-align: center;
+    }
+    input {
+      width: 250px;
+      height: 30px;
+      background-color: $primary-color-transparent;
+      backdrop-filter: blur(10px);
+      border: none;
+      border-bottom: 1px solid white;
+      z-index: 2;
+      cursor: text;
+      border-radius: 30px;
+      padding: 2px;
+      text-align: center;
+      color: $font-color-white;
+    }
+  }
+  .uses {
+    display: flex;
+    gap: 10px;
+    a {
+      color: $font-color-white;
+      &:hover {
+        opacity: 80%;
+      }
+    }
+  }
+}
+
+/* CONNEXION */
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100svw;
+  height: 100%;
+  backdrop-filter: blur(5px);
+
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  .modal-content {
+    position: relative;
+    top: 160px;
+    width: 50%;
+    height: 50%;
+    max-height: 500px;
+    max-width: 600px;
+    background-color: $secondary-color-transparent;
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 9px 12px 41px -5px $primary-color;
+    border: 1px solid $primary-color;
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+  }
+}

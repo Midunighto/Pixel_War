@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap");
+
+$primary-font: "Montserrat", sans-serif;
+$secondary-font: "Teko", sans-serif;
+
+$font-color-white: white;
+$font-color-dark: black;
+
+$primary-color: #1c1727;
+$primary-color-transparent: #2c253866;
+$secondary-color: #5c5470;
+$secondary-color-transparent: #5c547066;
+$tertiary-color: #dbd8e3;
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: $primary-font;
+}
+
+body {
+  background-color: $primary-color;
+  min-height: 100vh;
+}
+.page {
+  max-width: 1220px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 160px 0;
+
+  .btn {
+    font-weight: 400;
+  }
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 400;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: $font-color-white;
+  font-size: 0.7rem;
+}
+/* DARK MODE */
+/* .dark {
+  background-image: url(../assets/background-dark.png);
+  color: $font-color-dark;
+  nav {
+    a {
+      color: $font-color-white !important;
+    }
+    .line {
+      background-color: $font-color-white;
+    }
+  }
+  .container {
+    p,
+    .title,
+    small {
+      color: $font-color-white;
+    }
+    .wishlists {
+      .list-row {
+        border-bottom: 1px solid #575757;
+      }
+    }
+  }
+
+  h2,
+  button,
+  .wrapper > h1 {
+    color: $font-color-white;
+  }
+  .list-container {
+    color: $font-color-dark;
+    h1,
+    h2 {
+      color: $font-color-dark;
+    }
+    a {
+      background-color: $tertiary-color !important;
+    }
+  }
+  button.add-item,
+  button.validate-button {
+    background-color: $tertiary-color !important;
+    color: $font-color-white;
+  }
+  button.new-wish {
+    background-color: $font-color-white !important;
+    color: $font-color-dark;
+  }
+  footer {
+    color: $font-color-white;
+  }
+}
+ */
