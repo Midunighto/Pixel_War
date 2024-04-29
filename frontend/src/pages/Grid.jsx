@@ -61,7 +61,7 @@ export default function Grid() {
         );
         setGridData(response.data);
         setGridName(response.data.name);
-        setStartTime(new Date(response.data.created_at));
+        setStartTime(new Date(response.data.creation_time));
 
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
