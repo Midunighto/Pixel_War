@@ -110,6 +110,16 @@
           }
         }
         .canva-container {
+          position: relative;
+          p {
+            color: $font-color-white;
+            background-color: $secondary-color;
+            padding: 3px;
+            border-radius: 5px;
+            box-shadow: 9px 12px 41px -5px #2c253866;
+            width: fit-content;
+            text-wrap: nowrap;
+          }
         }
       }
       .paint {

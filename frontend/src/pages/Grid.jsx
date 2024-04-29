@@ -4,23 +4,35 @@ import { React, useState, useEffect, useRef } from "react";
 import { useStoredUser } from "../contexts/UserContext";
 
 import Button from "../components/Button";
-import { ColorPicker, Hue, Saturation, useColor } from "react-color-palette";
+import Canvas from "../components/Canvas";
+import ColorSlider from "../components/ColorSlider";
+import Tools from "../components/Tools";
+
+import { useColor } from "react-color-palette";
 import "react-color-palette/css";
 
 import "../styles/grids.scss";
 
-import penImg from "../assets/paint.webp";
-import eraserImg from "../assets/eraser.webp";
 import bombBonusImg from "../assets/bomb.webp";
 import penBonusImg from "../assets/big-pen.webp";
+import PixelInfo from "../components/PixelInfo";
 
 export default function Grid() {
   const { storedUser } = useStoredUser();
   const [gridData, setGridData] = useState(null);
   const [gridName, setGridName] = useState("");
   const [grid, setGrid] = useState([]);
+  const [pixelInfos, setPixelInfos] = useState({
+    pseudo: null,
+    createdAt: null,
+  });
+  const [showPixelInfos, setShowPixelInfos] = useState(false);
+
   const { id } = useParams();
   const canvasRef = useRef(null);
+  /* state pour récupérer les coordonnées du click */
+  const [clickX, setClickX] = useState(0);
+  const [clickY, setClickY] = useState(0);
   /* CHRONO STATE */
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -146,10 +158,11 @@ export default function Grid() {
     try {
       const pixelData = {
         user_id: storedUser.id,
+        user_pseudo: storedUser.pseudo,
         grid_id: id,
         color: color.hex,
-        x_coordinate: Math.floor(x / pixelSize),
-        y_coordinate: Math.floor(y / pixelSize),
+        x_coordinate: x,
+        y_coordinate: y,
       };
 
       const response = await axios.post(
@@ -173,8 +186,8 @@ export default function Grid() {
         {
           id: response.data.insertId,
           color: color.hex,
-          x_coordinate: Math.floor(x / pixelSize),
-          y_coordinate: Math.floor(y / pixelSize),
+          x_coordinate: x,
+          y_coordinate: y,
         },
       ]);
     } catch (err) {
@@ -184,8 +197,8 @@ export default function Grid() {
 
   const handleErasePixel = async (x, y) => {
     try {
-      const pixelX = Math.floor(x / pixelSize);
-      const pixelY = Math.floor(y / pixelSize);
+      const pixelX = x;
+      const pixelY = y;
 
       /* Vérifier si un pixel existe à ces coordonnées dans la grille */
       const selectedPixel = grid.find(
@@ -193,8 +206,11 @@ export default function Grid() {
           pixel.x_coordinate === pixelX && pixel.y_coordinate === pixelY
       );
       console.log(selectedPixel);
-      console.log(selectedPixel.id);
-      if (selectedPixel && selectedPixel.id !== undefined) {
+      if (
+        selectedPixel &&
+        selectedPixel.id !== undefined &&
+        storedUser.pseudo === selectedPixel.user_pseudo
+      ) {
         /* on supprime le pixel de la grid front  */
         setGrid((prevGrid) =>
           prevGrid.filter((pixel) => pixel.id !== selectedPixel.id)
@@ -219,23 +235,44 @@ export default function Grid() {
   const handleCanvasClick = (event) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = Math.floor((event.clientX - rect.left) / pixelSize);
+    const y = Math.floor((event.clientY - rect.top) / pixelSize);
+    setClickX(x);
+    setClickY(y);
 
     if (pen) {
       handleAddPixel(x, y);
     } else if (eraser) {
       handleErasePixel(x, y);
+    } else {
+      const pixel = grid.find(
+        (p) => p.x_coordinate === x && p.y_coordinate === y
+      );
+      if (pixel) {
+        if (
+          pixelInfos.pseudo === pixel.user_pseudo &&
+          pixelInfos.createdAt === pixel.created_at
+        ) {
+          setPixelInfos({ pseudo: null, createdAt: null });
+          setShowPixelInfos(false);
+        } else {
+          setPixelInfos({
+            pseudo: pixel.user_pseudo,
+            createdAt: pixel.created_at,
+          });
+          setShowPixelInfos(true);
+        }
+      }
     }
   };
 
   const handlePen = () => {
-    setPen(true);
+    setPen(!pen);
     setEraser(false);
   };
 
   const handleEraser = () => {
-    setEraser(true);
+    setEraser(!eraser);
     setPen(false);
   };
 
@@ -262,13 +299,20 @@ export default function Grid() {
         <div className="grid-area-container">
           <div className="game-wrapper">
             <div className="canva-container">
-              <canvas
-                ref={canvasRef}
-                width={nbPixels * pixelSize}
-                height={nbPixels * pixelSize}
-                className="canva"
-                onClick={handleCanvasClick}
+              <Canvas
+                canvasRef={canvasRef}
+                nbPixels={nbPixels}
+                pixelSize={pixelSize}
+                handleCanvasClick={handleCanvasClick}
               />
+              {showPixelInfos && (
+                <PixelInfo
+                  pixelInfos={pixelInfos}
+                  clickX={clickX}
+                  clickY={clickY}
+                  pixelSize={pixelSize}
+                />
+              )}
             </div>
             <div className="bonus">
               <div className="bombs-container">
@@ -280,44 +324,37 @@ export default function Grid() {
                       type="button"
                       onClick={applyBomb}
                     >
-                      <img src={bombBonusImg} alt="" width={30} height={30} />
+                      <img
+                        src={bombBonusImg}
+                        alt="bombe"
+                        width={30}
+                        height={30}
+                      />
                       <p>1</p>
                     </Button>
                   ))}
               </div>
               <div className="pens-container">
                 <Button className="pen-bonus">
-                  <img src={penBonusImg} alt="" width={30} height={30} />
+                  <img
+                    src={penBonusImg}
+                    alt="rouleau de peinture"
+                    width={30}
+                    height={30}
+                  />
                   <p>5</p>
                 </Button>
               </div>
             </div>
           </div>
           <div className="paint">
-            <div className="tools">
-              <Button
-                type="button"
-                className={`tool ${pen ? "active" : ""}`}
-                onClick={handlePen}
-              >
-                <img src={penImg} alt="pinceau" />
-              </Button>
-              <Button
-                type="button"
-                className={`tool ${eraser ? "active" : ""}`}
-                onClick={handleEraser}
-              >
-                <img src={eraserImg} alt="gomme" />
-              </Button>
-            </div>
-            <div className="custom-layout">
-              <Saturation
-                height={50}
-                color={color}
-                onChange={handleColorChange}
-              />
-              <Hue color={color} onChange={handleColorChange} />
-            </div>
+            <Tools
+              pen={pen}
+              eraser={eraser}
+              handlePen={handlePen}
+              handleEraser={handleEraser}
+            />
+            <ColorSlider color={color} handleColorChange={handleColorChange} />
           </div>
         </div>
       </section>

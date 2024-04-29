@@ -76,13 +76,13 @@ export default function Home() {
             <p>
               Crée une nouvelle grille ou déssine sur une grille créée par un
               autre joueur. N’oublie pas que chaque grille a une durée de vie de
-              4h maximum ! Tu peux placer 1 pixel toutes les 5 secondes
+              3h maximum ! Tu peux placer 1 pixel toutes les 5 secondes
             </p>
           </div>
           <div className="rules bonus1">
             <h2>Bonus destruction</h2>
             <p>
-              Gagne une grenade tous les 70 pixels placés et déruis jusqu’à 3
+              Gagne une grenade tous les 70 pixels placés et déruis jusqu’à 5
               pixels adverses !
             </p>
           </div>

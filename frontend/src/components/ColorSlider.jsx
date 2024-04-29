@@ -1,0 +1,24 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Saturation, Hue } from "react-color-palette";
+
+function ColorSlider({ color, handleColorChange }) {
+  return (
+    <div className="custom-layout">
+      <Saturation height={50} color={color} onChange={handleColorChange} />
+      <Hue color={color} onChange={handleColorChange} />
+    </div>
+  );
+}
+
+ColorSlider.propTypes = {
+  color: PropTypes.shape({
+    h: PropTypes.number.isRequired,
+    s: PropTypes.number.isRequired,
+    v: PropTypes.number.isRequired,
+    a: PropTypes.number.isRequired,
+  }).isRequired,
+  handleColorChange: PropTypes.func.isRequired,
+};
+
+export default ColorSlider;
