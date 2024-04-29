@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useStoredUser } from "../contexts/UserContext";
 import { useModal } from "../contexts/ModalContext";
@@ -16,6 +16,9 @@ export default function Navbar() {
   const [navScrollClass, setNavScrollClass] = useState("");
   const [navHeight, setNavHeight] = useState("70px");
   const [navBg, setNavBg] = useState("#38304866");
+  const location = useLocation();
+  const isGridPage = /\/grid\/.*/.test(location.pathname);
+
   const listenScrollEvent = () => {
     if (window.scrollY > 100) {
       setNavScrollClass("scrolled");
@@ -39,10 +42,15 @@ export default function Navbar() {
 
   return (
     <div
-      className={`nav-bg ${navScrollClass}`}
+      className={`nav-bg ${navScrollClass} ${isGridPage ? "scrolled " : ""}`}
       style={{ height: navHeight, transition: "all 1s" }}
     >
-      <nav style={{ backgroundColor: navBg, transition: "all 1s" }}>
+      <nav
+        style={{
+          backgroundColor: isGridPage ? "transparent" : navBg,
+          transition: "all 1s",
+        }}
+      >
         <ul className="nav-left">
           <li>
             <Link to="/">

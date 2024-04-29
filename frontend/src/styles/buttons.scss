@@ -17,7 +17,9 @@
     }
   }
 }
-
+.btn {
+  cursor: pointer;
+}
 $dark: #222;
 
 .blob-btn-dark {
@@ -25,7 +27,6 @@ $dark: #222;
   z-index: 1;
   position: relative;
   padding: 10px;
-  min-width: 150px;
   max-width: 300px;
   text-align: center;
   color: $font-color-white;
@@ -114,7 +115,6 @@ $dark: #222;
   position: relative;
   padding: 10px;
   max-width: 300px;
-  min-width: 150px;
   text-align: center;
   color: $font-color-dark;
   font-size: 16px;
@@ -198,4 +198,5 @@ $dark: #222;
 }
 svg {
   position: absolute;
+  z-index: -1;
 }

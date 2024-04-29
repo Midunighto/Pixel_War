@@ -76,7 +76,7 @@ export default function Home() {
             <p>
               Crée une nouvelle grille ou déssine sur une grille créée par un
               autre joueur. N’oublie pas que chaque grille a une durée de vie de
-              4h maximum ! Tu peux placer 1 pixel toutes les 10 secondes
+              4h maximum ! Tu peux placer 1 pixel toutes les 5 secondes
             </p>
           </div>
           <div className="rules bonus1">
@@ -89,7 +89,8 @@ export default function Home() {
           <div className="rules bonus2">
             <h2>Bonus création</h2>
             <p>
-              Gagne un pinceau double utilisable 5 fois toutes les 15 minutes !
+              Gagne un pinceau, qui double tes pixels, utilisable 5 fois toutes
+              les 15 minutes !
             </p>
           </div>
         </section>
