@@ -68,6 +68,26 @@ const add = (req, res, next) => {
     });
 };
 
+const readByCoordinates = async (req, res) => {
+  const { grid_id } = req.params;
+  const { x_coordinate, y_coordinate } = req.query;
+
+  try {
+    const pixel = await tables.pixel.getByCoordinates(
+      x_coordinate,
+      y_coordinate,
+      grid_id
+    );
+
+    if (pixel) {
+      res.json(pixel);
+    } else {
+      res.status(404).send("Pixel not found");
+    }
+  } catch (error) {
+    res.status(500).send("Server error");
+  }
+};
 // Destroy (Delete) operation
 const destroy = async (req, res, next) => {
   try {
@@ -93,6 +113,7 @@ module.exports = {
   browse,
   read,
   readByGrid,
+  readByCoordinates,
   add,
   destroy,
 };

@@ -27,6 +27,14 @@ class PixelManager extends AbstractManager {
     return rows[0];
   }
 
+  async getByCoordinates(x_coordinate, y_coordinate, grid_id) {
+    const [rows] = await this.database.query(
+      `SELECT * FROM ${this.table} WHERE x_coordinate = ? AND y_coordinate = ? AND grid_id = ?`,
+      [x_coordinate, y_coordinate, grid_id]
+    );
+    return rows[0];
+  }
+
   async getAll() {
     const [rows] = await this.database.query(`SELECT * FROM ${this.table}`);
     return rows;
@@ -42,6 +50,10 @@ class PixelManager extends AbstractManager {
 
   // The D of CRUD - Delete operation
   async delete(id) {
+    if (id === undefined) {
+      throw new Error("Invalid pixel ID");
+    }
+
     const [result] = await this.database.query(
       `DELETE FROM ${this.table} WHERE id = ?`,
       [id]

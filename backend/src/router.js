@@ -50,6 +50,12 @@ router.get("/grids/:grid_id/pixels", pixelControllers.browse);
 // Route to get a specific pixel details in a specific grid
 router.get("/grids/:grid_id/pixels/:id", pixelControllers.read);
 
+// Route to get a specific pixel details in a specific grid by coordinates
+router.get(
+  "/grids/:grid_id/pixels/coordinates",
+  pixelControllers.readByCoordinates
+);
+
 // Route to add a new pixel in a specific grid
 router.post("/grids/:grid_id/pixels", isPixelValid, pixelControllers.add);
 
