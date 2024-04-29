@@ -41,13 +41,17 @@ export default function Grid() {
   const [eraser, setEraser] = useState(false);
   const [color, setColor] = useColor("#ffffff");
   const [lastPixelTime, setLastPixelTime] = useState(Date.now());
-  /* BONUS STATE */
+  /* BONUS  */
   const [userPixelCount, setUserPixelCount] = useState(0);
   const [bombBonus, setBombBonus] = useState([{}, {}, {}]);
-  const [useBombBonus, setUseBombBonus] = useState(false);
+  const [activeBomb, setActiveBomb] = useState(
+    Array.from({ length: bombBonus.length }, () => false)
+  );
 
   const [penBonus, setPenBonus] = useState([{}, {}, {}, {}, {}]);
-  const [usePenBonus, setUsePenBonus] = useState(false);
+  const [activePenBonus, setActivePenBonus] = useState(
+    Array.from({ length: penBonus.length }, () => false)
+  );
 
   useEffect(() => {
     const loadData = async () => {
@@ -145,9 +149,20 @@ export default function Grid() {
   };
 
   /* INTÉRACTIVITÉ JEU */
-  const applyBomb = () => {
-    setUseBombBonus(true);
+  const handleBombBonusClick = (index) => {
+    const newActiveBomb = Array.from({ length: bombBonus.length }, () => false);
+    newActiveBomb[index] = true;
+    setActiveBomb(newActiveBomb);
   };
+  const handlePenBonusClick = (index) => {
+    const newActivePenBonus = Array.from(
+      { length: penBonus.length },
+      () => false
+    );
+    newActivePenBonus[index] = true;
+    setActivePenBonus(newActivePenBonus);
+  };
+
   const handleAddPixel = async (x, y) => {
     const now = Date.now();
     if (now - lastPixelTime < 5000) {
@@ -173,7 +188,7 @@ export default function Grid() {
       setLastPixelTime(now);
       setUserPixelCount((prevCount) => {
         const newCount = prevCount + 1;
-        if (newCount === 70) {
+        if (newCount === 20) {
           setBombBonus((prevBonuses) => [...prevBonuses, {}]);
           return 0;
         } else {
@@ -186,6 +201,8 @@ export default function Grid() {
         {
           id: response.data.insertId,
           color: color.hex,
+          user_pseudo: pixelData.user_pseudo,
+          created_at: new Date().toISOString(),
           x_coordinate: x,
           y_coordinate: y,
         },
@@ -205,7 +222,7 @@ export default function Grid() {
         (pixel) =>
           pixel.x_coordinate === pixelX && pixel.y_coordinate === pixelY
       );
-      console.log(selectedPixel);
+      console.log("pixel", selectedPixel);
       if (
         selectedPixel &&
         selectedPixel.id !== undefined &&
@@ -316,34 +333,44 @@ export default function Grid() {
             </div>
             <div className="bonus">
               <div className="bombs-container">
-                {bombBonus.length > 0 &&
-                  bombBonus.map((bonus, index) => (
-                    <Button
-                      key={index}
-                      className="bomb-bonus"
-                      type="button"
-                      onClick={applyBomb}
-                    >
-                      <img
-                        src={bombBonusImg}
-                        alt="bombe"
-                        width={30}
-                        height={30}
-                      />
-                      <p>1</p>
-                    </Button>
-                  ))}
+                {bombBonus.map((bonus, index) => (
+                  <Button
+                    key={index}
+                    className={`bomb-bonus ${
+                      activeBomb[index] ? "active" : ""
+                    }`}
+                    type="button"
+                    onClick={() => handleBombBonusClick(index)}
+                  >
+                    <img
+                      src={bombBonusImg}
+                      alt="bombe"
+                      width={30}
+                      height={30}
+                    />
+                    <p>1</p>
+                  </Button>
+                ))}
               </div>
               <div className="pens-container">
-                <Button className="pen-bonus">
-                  <img
-                    src={penBonusImg}
-                    alt="rouleau de peinture"
-                    width={30}
-                    height={30}
-                  />
-                  <p>5</p>
-                </Button>
+                {penBonus.map((bonus, index) => (
+                  <Button
+                    key={index}
+                    className={`pen-bonus ${
+                      activePenBonus[index] ? "active" : ""
+                    }`}
+                    type="button"
+                    onClick={() => handlePenBonusClick(index)}
+                  >
+                    <img
+                      src={penBonusImg}
+                      alt="rouleau de peinture"
+                      width={30}
+                      height={30}
+                    />
+                    <p>5</p>
+                  </Button>
+                ))}
               </div>
             </div>
           </div>

@@ -82,8 +82,8 @@ export default function Home() {
           <div className="rules bonus1">
             <h2>Bonus destruction</h2>
             <p>
-              Gagne une grenade tous les 70 pixels placés et déruis jusqu’à 5
-              pixels adverses !
+              Gagne une grenade tous les 20 pixels placés et déruis pour
+              détruire 1 pixel adverse !
             </p>
           </div>
           <div className="rules bonus2">
