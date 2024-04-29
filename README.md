@@ -1,10 +1,10 @@
-🎨💣 Pixel War
+🎨🎨 Pixel War 💣💣
 
 Pixel War est une application web qui permet aux utilisateurs de créer des œuvres pixelisées en posant des pixels sur une grille virtuelle. Les utilisateurs peuvent également interagir avec les pixels des autres en les détruisant.
 
 ---
 
-🖌️🖌️🖌️Fonctionnalités
+🖌️🖌️Fonctionnalités🖌️🖌️
 Création d'œuvres pixelisées en plaçant des pixels sur une grille.
 Interaction avec les pixels des autres utilisateurs.
 Attribution de bonus en fonction du temps de connexion et du nombre de pixels placés.
@@ -17,29 +17,25 @@ Autres : jQuery, Bootstrap, JWT pour l'authentification
 
 ---
 
-💾💾 Installation
+💾💾 Installation 💾💾
 Cloner le repository :
-bash
-Copy code
 git clone https://github.com/votre_utilisateur/pixel-art-creator.git
 Installer les dépendances :
-bash
-Copy code
 cd pixel-art-creator
 npm install
+
 Lancer l'application :
-bash
-Copy code
 npm start
+
 Contribuer
 Les contributions sont les bienvenues ! Pour toute modification importante, veuillez d'abord ouvrir un ticket pour discuter de ce que vous souhaitez modifier.
 
 ---
 
-👧🏻Auteur
-Midunighto
+👧🏻 Auteur 👧🏻
+Midunighto (Océane Lahoual)
 
 ---
 
-🪪Licence
+🪪 Licence 🪪
 Ce projet est sous licence MIT.
