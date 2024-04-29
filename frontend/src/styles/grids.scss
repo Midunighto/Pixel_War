@@ -14,7 +14,32 @@
     .header {
       height: 50px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      flex-direction: row;
+      width: 70%;
+      position: relative;
+      .chrono-container {
+        height: 200px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        position: absolute;
+        left: -100px;
+        top: 10px;
+        p {
+          padding: 10px;
+          width: 100px;
+          border: 1px solid $tertiary-color;
+          height: fit-content;
+          border-radius: 10px;
+          background-color: $secondary-color-transparent;
+          color: $font-color-white;
+          text-align: center;
+          line-height: 2.56;
+          font-size: 1.3rem;
+          font-weight: 500;
+        }
+      }
       form {
         display: flex;
         flex-direction: row;
@@ -22,6 +47,7 @@
         justify-content: center;
         line-height: 2;
         gap: 10px;
+        flex-grow: 1;
         input {
           width: 400px;
           height: 30px;
@@ -44,18 +70,62 @@
       justify-content: center;
       align-items: center;
       gap: 20px;
-      .paint {
+      .game-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
         width: 100%;
+        position: relative;
+        .bonus {
+          position: absolute;
+          right: 200px;
+          display: flex;
+          flex-direction: row;
+          gap: 15px;
+          .bombs-container,
+          .pens-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+          }
+          .pen-bonus,
+          .bomb-bonus {
+            position: relative;
+            background-color: $tertiary-color;
+            border: none;
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            &:hover {
+              background-color: $secondary-color;
+              transform: scale(1.1);
+            }
+            p {
+              position: absolute;
+              top: 25px;
+              right: 5px;
+              color: $font-color-dark;
+              font-size: 0.8rem;
+            }
+          }
+        }
+        .canva-container {
+        }
+      }
+      .paint {
+        width: 95%;
         .tools {
           display: flex;
           gap: 5px;
           margin: -50px 0 0 10px;
+          z-index: 1;
           .tool {
             background-color: $tertiary-color;
             border-radius: 10px 10px 0 0;
             width: 50px;
             height: 50px;
             border: none;
+            z-index: 1;
             &:hover {
               background-color: $secondary-color;
               transform: scale(1.1);
@@ -68,6 +138,10 @@
         }
         .custom-layout {
           width: 100%;
+          z-index: 2;
+          div {
+            z-index: 2;
+          }
         }
       }
     }
