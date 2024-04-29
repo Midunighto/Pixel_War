@@ -1,4 +1,6 @@
 import axios from "axios";
+import io from "socket.io-client";
+
 import { useParams } from "react-router-dom";
 import { React, useState, useEffect, useRef } from "react";
 import { useStoredUser } from "../contexts/UserContext";
@@ -27,6 +29,45 @@ export default function Grid() {
     createdAt: null,
   });
   const [showPixelInfos, setShowPixelInfos] = useState(false);
+  /* web socket */
+  const [message, setMessage] = useState("");
+
+  //// Créer une instance de socket en dehors des fonctions
+  const socket = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
+    transports: ["websocket"],
+  });
+
+  const sendMessage = () => {
+    socket.emit("client-message", { message });
+  };
+
+  const socketRef = useRef();
+
+  useEffect(() => {
+    socketRef.current = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
+      transports: ["websocket"],
+    });
+
+    socketRef.current.on("connect", () => {
+      console.log("Connecté au serveur");
+    });
+
+    socketRef.current.on("connect_error", (error) => {
+      console.log("Erreur de connexion:", error);
+    });
+
+    socketRef.current.on("disconnect", (reason) => {
+      console.log("Déconnecté du serveur:", reason);
+    });
+
+    socketRef.current.on("eventFromServer", (data) => {
+      console.log("Données reçues du serveur:", data);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []); // Passer un tableau vide pour exécuter l'effet une seule fois à l'initialisation du composant
 
   const { id } = useParams();
   const canvasRef = useRef(null);
@@ -51,6 +92,9 @@ export default function Grid() {
   const [penBonus, setPenBonus] = useState([{}, {}, {}, {}, {}]);
   const [activePenBonus, setActivePenBonus] = useState(
     Array.from({ length: penBonus.length }, () => false)
+  );
+  const [penBonusUses, setPenBonusUses] = useState(
+    Array(penBonus.length).fill(5)
   );
 
   useEffect(() => {
@@ -115,7 +159,7 @@ export default function Grid() {
         }
       }
 
-      // Dessiner les pixels
+      // Dessiner les pixels du damier
       if (grid.length > 0) {
         grid.forEach((pixel) => {
           ctx.fillStyle = pixel.color;
@@ -147,8 +191,7 @@ export default function Grid() {
       console.error(err);
     }
   };
-
-  /* INTÉRACTIVITÉ JEU */
+  /* GESTION BOUTONS */
   const handleBombBonusClick = (index) => {
     const newActiveBomb = Array.from({ length: bombBonus.length }, () => false);
     newActiveBomb[index] = true;
@@ -162,6 +205,8 @@ export default function Grid() {
     newActivePenBonus[index] = true;
     setActivePenBonus(newActivePenBonus);
   };
+
+  /* INTÉRACTIVITÉ JEU */
 
   const handleAddPixel = async (x, y) => {
     const now = Date.now();
@@ -185,6 +230,64 @@ export default function Grid() {
         pixelData,
         { withCredentials: true }
       );
+
+      const newPixel = {
+        id: response.data.insertId,
+        color: color.hex,
+        user_pseudo: pixelData.user_pseudo,
+        created_at: new Date().toISOString(),
+        x_coordinate: x,
+        y_coordinate: y,
+      };
+
+      socketRef.current.emit("add-pixel", newPixel);
+
+      let secondPixelResponse;
+      let activePenBonusIndex = activePenBonus.findIndex(
+        (bonus) => bonus === true
+      );
+      if (activePenBonusIndex !== -1) {
+        const secondPixelData = { ...pixelData, x_coordinate: x + 1 };
+        secondPixelResponse = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`,
+          secondPixelData,
+          { withCredentials: true }
+        );
+
+        const secondNewPixel = {
+          id: secondPixelResponse.data.insertId,
+          color: color.hex,
+          user_pseudo: pixelData.user_pseudo,
+          created_at: new Date().toISOString(),
+          x_coordinate: x + 1,
+          y_coordinate: y,
+        };
+
+        socketRef.current.emit("add-pixel", secondNewPixel);
+
+        setPenBonusUses((prevUses) => {
+          const newUses = [...prevUses];
+          newUses[activePenBonusIndex] -= 1;
+
+          // Si penBonusUses pour l'index actif est 0, supprimer l'objet correspondant de penBonus
+          if (newUses[activePenBonusIndex] === 0) {
+            setPenBonus((prevBonus) => {
+              const newBonus = [...prevBonus];
+              newBonus.splice(activePenBonusIndex, 1);
+              return newBonus;
+            });
+            setActivePenBonus((prevActive) => {
+              const newActive = [...prevActive];
+              newActive[activePenBonusIndex] = false;
+              return newActive;
+            });
+            // Réinitialiser penBonusUses à 5
+            newUses[activePenBonusIndex] = 5;
+          }
+          return newUses;
+        });
+      }
+
       setLastPixelTime(now);
       setUserPixelCount((prevCount) => {
         const newCount = prevCount + 1;
@@ -198,20 +301,13 @@ export default function Grid() {
 
       setGrid((prevGrid) => [
         ...prevGrid,
-        {
-          id: response.data.insertId,
-          color: color.hex,
-          user_pseudo: pixelData.user_pseudo,
-          created_at: new Date().toISOString(),
-          x_coordinate: x,
-          y_coordinate: y,
-        },
+        newPixel,
+        ...(secondPixelResponse ? [secondNewPixel] : []),
       ]);
     } catch (err) {
       console.error(err);
     }
   };
-
   const handleErasePixel = async (x, y) => {
     try {
       const pixelX = x;
@@ -239,6 +335,10 @@ export default function Grid() {
           }`,
           { withCredentials: true }
         );
+
+        // Émettez l'événement 'remove-pixel' avec l'ID du pixel supprimé
+        socketRef.current.emit("remove-pixel", selectedPixel.id);
+
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );
@@ -256,10 +356,17 @@ export default function Grid() {
     const y = Math.floor((event.clientY - rect.top) / pixelSize);
     setClickX(x);
     setClickY(y);
+    console.log("pen:", pen);
+    console.log("activePenBonus:", activePenBonus);
+    console.log("eraser:", eraser);
+    console.log("Before if condition, pen:", pen);
+    console.log("Before if condition, activePenBonus:", activePenBonus);
 
-    if (pen) {
+    if (pen || activePenBonus.some((value) => value)) {
+      console.log("Inside if condition, calling handleAddPixel");
       handleAddPixel(x, y);
     } else if (eraser) {
+      console.log("Inside else if condition, calling handleErasePixel");
       handleErasePixel(x, y);
     } else {
       const pixel = grid.find(
@@ -312,6 +419,12 @@ export default function Grid() {
               OK
             </Button>
           </form>
+          {/*    <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button onClick={sendMessage}>Envoyer</button> */}
         </div>
         <div className="grid-area-container">
           <div className="game-wrapper">
@@ -368,7 +481,7 @@ export default function Grid() {
                       width={30}
                       height={30}
                     />
-                    <p>5</p>
+                    <p>{penBonusUses[index]}</p>
                   </Button>
                 ))}
               </div>
