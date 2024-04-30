@@ -40,7 +40,8 @@
           font-weight: 500;
         }
       }
-      form {
+      form,
+      #un-grid-name {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -62,6 +63,12 @@
           border-radius: 30px;
         }
       }
+      #un-grid-name {
+        margin: 10px 0 0 -20px;
+      }
+    }
+    #elapsed-time {
+      color: red;
     }
     .grid-area-container {
       width: 100%;
@@ -115,6 +122,11 @@
               font-size: 0.8rem;
             }
           }
+          .bomb-animation {
+            img {
+              animation: bomb-animation 2s ease-in-out;
+            }
+          }
           .active {
             background-color: $secondary-color;
             transform: scale(1.1);
@@ -166,5 +178,16 @@
         }
       }
     }
+  }
+}
+@keyframes bomb-animation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
   }
 }

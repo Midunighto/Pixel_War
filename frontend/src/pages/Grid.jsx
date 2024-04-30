@@ -23,6 +23,7 @@ export default function Grid() {
   const { storedUser } = useStoredUser();
   const [gridData, setGridData] = useState(null);
   const [gridName, setGridName] = useState("");
+  const [stop, setStop] = useState(false);
   const [grid, setGrid] = useState([]);
   const [pixelInfos, setPixelInfos] = useState({
     pseudo: null,
@@ -87,6 +88,7 @@ export default function Grid() {
       socketRef.current.emit("setUsername", storedUser.pseudo);
     }
   }, [socketRef, storedUser.pseudo]);
+
   const { id } = useParams();
   const canvasRef = useRef(null);
   /* state pour récupérer les coordonnées du click */
@@ -102,19 +104,19 @@ export default function Grid() {
   const [lastPixelTime, setLastPixelTime] = useState(Date.now());
   /* BONUS  */
   const [userPixelCount, setUserPixelCount] = useState(0);
-  const [bombBonus, setBombBonus] = useState([{}, {}, {}]);
+  const [bombBonus, setBombBonus] = useState([]);
   const [activeBomb, setActiveBomb] = useState(
     Array.from({ length: bombBonus.length }, () => false)
   );
 
-  const [penBonus, setPenBonus] = useState([{}, {}, {}, {}, {}]);
+  const [penBonus, setPenBonus] = useState([]);
   const [activePenBonus, setActivePenBonus] = useState(
     Array.from({ length: penBonus.length }, () => false)
   );
   const [penBonusUses, setPenBonusUses] = useState(
     Array(penBonus.length).fill(5)
   );
-
+  const [animateBomb, setAnimateBomb] = useState(false);
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -137,15 +139,32 @@ export default function Grid() {
   }, [id]);
   /* CHRONO */
   useEffect(() => {
-    if (startTime) {
+    if (startTime && !stop) {
       const interval = setInterval(() => {
-        setElapsedTime(new Date() - startTime);
+        const elapsedTime = new Date() - startTime;
+        setElapsedTime(elapsedTime);
+        if (elapsedTime >= 10800000) {
+          // 10800000 ms = 3 hours
+          setStop(true);
+        }
       }, 1000);
 
       return () => clearInterval(interval);
     }
-  }, [startTime]);
+  }, [startTime, stop]);
 
+  /* BONUS Pinceau */
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPenBonus((prevPenBonus) => {
+        const newPenBonus = [...prevPenBonus, {}];
+        setPenBonusUses((prevPenBonusUses) => [...prevPenBonusUses, 5]);
+        return newPenBonus;
+      });
+    }, 900000); // 900000 ms = 15 min
+
+    return () => clearInterval(interval);
+  }, []);
   function formatTime(timeInMilliseconds) {
     const seconds = Math.floor(timeInMilliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -291,7 +310,6 @@ export default function Grid() {
       );
       let secondNewPixel = null;
       if (activePenBonusIndex !== -1) {
-        console.log("dans la condition bonus", activePenBonusIndex);
         const secondPixelData = { ...pixelData, x_coordinate: x + 1 };
         secondPixelResponse = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`,
@@ -336,13 +354,14 @@ export default function Grid() {
       setLastPixelTime(now);
       setUserPixelCount((prevCount) => {
         const newCount = prevCount + 1;
-        if (newCount === 20) {
+        if (newCount === 4) {
           setBombBonus((prevBonuses) => [...prevBonuses, {}]);
           return 0;
         } else {
           return newCount;
         }
       });
+      console.log("userPixelCount", userPixelCount);
 
       setGrid((prevGrid) => {
         // Créez une copie de la grille précédente
@@ -373,6 +392,7 @@ export default function Grid() {
       );
       console.log("pixel", selectedPixel);
       if (
+        eraser &&
         selectedPixel &&
         selectedPixel.id !== undefined &&
         storedUser.pseudo === selectedPixel.user_pseudo
@@ -391,7 +411,33 @@ export default function Grid() {
 
         // Émettez l'événement 'remove-pixel' avec l'ID du pixel supprimé
         socketRef.current.emit("remove-pixel", selectedPixel.id);
+        const pixelResponse = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
+        );
+        setGrid(pixelResponse.data);
+      } else if (
+        storedUser.pseudo !== selectedPixel.user_pseudo &&
+        activeBomb.some((value) => value)
+      ) {
+        /* on supprime le pixel de la grid front  */
+        setGrid((prevGrid) =>
+          prevGrid.filter((pixel) => pixel.id !== selectedPixel.id)
+        );
 
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels/${
+            selectedPixel.id
+          }`,
+          { withCredentials: true }
+        );
+
+        socketRef.current.emit("remove-pixel", selectedPixel.id);
+        setBombBonus((prevBonus) => {
+          const newBonus = [...prevBonus];
+          newBonus.splice(newBonus.length - activeBomb, 1);
+          setActiveBomb(Array.from({ length: bombBonus.length }, () => false));
+          return newBonus;
+        });
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );
@@ -411,33 +457,35 @@ export default function Grid() {
     setClickY(y);
     console.log("pen:", pen);
     console.log("activePenBonus:", activePenBonus);
+    console.log("activeBomb:", activeBomb);
     console.log("eraser:", eraser);
     console.log("Before if condition, pen:", pen);
     console.log("Before if condition, activePenBonus:", activePenBonus);
-
-    if (pen || activePenBonus.some((value) => value)) {
-      console.log("Inside if condition, calling handleAddPixel");
-      handleAddPixel(x, y);
-    } else if (eraser) {
-      console.log("Inside else if condition, calling handleErasePixel");
-      handleErasePixel(x, y);
-    } else {
-      const pixel = grid.find(
-        (p) => p.x_coordinate === x && p.y_coordinate === y
-      );
-      if (pixel) {
-        if (
-          pixelInfos.pseudo === pixel.user_pseudo &&
-          pixelInfos.createdAt === pixel.created_at
-        ) {
-          setPixelInfos({ pseudo: null, createdAt: null });
-          setShowPixelInfos(false);
-        } else {
-          setPixelInfos({
-            pseudo: pixel.user_pseudo,
-            createdAt: pixel.created_at,
-          });
-          setShowPixelInfos(true);
+    if (stop === false) {
+      if (pen || activePenBonus.some((value) => value)) {
+        console.log("Inside if condition, calling handleAddPixel");
+        handleAddPixel(x, y);
+      } else if (eraser || activeBomb.some((value) => value)) {
+        console.log("Inside else if condition, calling handleErasePixel");
+        handleErasePixel(x, y);
+      } else {
+        const pixel = grid.find(
+          (p) => p.x_coordinate === x && p.y_coordinate === y
+        );
+        if (pixel) {
+          if (
+            pixelInfos.pseudo === pixel.user_pseudo &&
+            pixelInfos.createdAt === pixel.created_at
+          ) {
+            setPixelInfos({ pseudo: null, createdAt: null });
+            setShowPixelInfos(false);
+          } else {
+            setPixelInfos({
+              pseudo: pixel.user_pseudo,
+              createdAt: pixel.created_at,
+            });
+            setShowPixelInfos(true);
+          }
         }
       }
     }
@@ -454,14 +502,23 @@ export default function Grid() {
           <div className="chrono-container">
             <p>{formatTime(elapsedTime)}</p>
           </div>
-          <form onSubmit={handleSubmit}>
-            <h1>
-              <input type="text" placeholder={gridName} onChange={handleName} />
-            </h1>
-            <Button className="blob-btn-light" type="submit">
-              OK
-            </Button>
-          </form>
+          {storedUser.id === gridData.user_id ? (
+            <form onSubmit={handleSubmit}>
+              <h1>
+                <input
+                  type="text"
+                  placeholder={gridName}
+                  onChange={handleName}
+                />
+              </h1>
+              <Button className="blob-btn-light" type="submit">
+                OK
+              </Button>
+            </form>
+          ) : (
+            <h1 id="un-grid-name">{gridName}</h1>
+          )}
+
           {/*    <input
             type="text"
             value={message}
@@ -469,6 +526,12 @@ export default function Grid() {
           />
           <button onClick={sendMessage}>Envoyer</button> */}
         </div>
+        {stop && (
+          <div className="end-game">
+            {" "}
+            <p id="elapsed-time">Vous ne pouvez plus modifier cette grille </p>
+          </div>
+        )}
         <div className="grid-area-container">
           <div className="game-wrapper">
             <p className="message">{message}</p>
@@ -494,7 +557,7 @@ export default function Grid() {
                   <Button
                     key={index}
                     className={`bomb-bonus ${
-                      activeBomb[index] ? "active" : ""
+                      activeBomb[index] ? "active bomb-animation" : ""
                     }`}
                     type="button"
                     onClick={() => handleBombBonusClick(index)}
@@ -504,6 +567,7 @@ export default function Grid() {
                       alt="bombe"
                       width={30}
                       height={30}
+                      onAnimationEnd={() => setAnimateBomb(false)}
                     />
                     <p>1</p>
                   </Button>
