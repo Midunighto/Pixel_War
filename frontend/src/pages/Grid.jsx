@@ -18,6 +18,8 @@ import "../styles/grids.scss";
 import bombBonusImg from "../assets/bomb.webp";
 import penBonusImg from "../assets/big-pen.webp";
 import PixelInfo from "../components/PixelInfo";
+import { success } from "../services/toast";
+import { UWebSocket } from "../utils/Uwebsocket";
 
 export default function Grid() {
   const { storedUser } = useStoredUser();
@@ -33,61 +35,85 @@ export default function Grid() {
   /* web socket */
   const [message, setMessage] = useState("");
   const hasConnectedRef = useRef(false);
-
-  const sendMessage = () => {
-    socketRef.current.emit("client-message", { message: messageRef.current });
-  };
-
   const socketRef = useRef();
+
   useEffect(() => {
-    if (!hasConnectedRef.current) {
-      socketRef.current = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
-        transports: ["websocket"],
-      });
+    socketRef.current = io.connect("http://localhost:4000");
 
-      socketRef.current.on("connect", () => {
-        console.log("Connecté au serveur");
-        socketRef.current.emit("setUsername", storedUser.pseudo);
-      });
+    socketRef.current.on("add-pixel", (newPixel) => {
+      // Mettez à jour votre état ici avec les nouvelles données de pixel
+      setGrid((prevGrid) => {
+        // Créez une copie de la grille précédente
+        const newGrid = [...prevGrid];
 
-      socketRef.current.on("connect_error", (error) => {
-        console.log("Erreur de connexion:", error);
-      });
-
-      socketRef.current.on("disconnect", (reason) => {
-        console.log("Déconnecté du serveur:", reason);
-      });
-
-      socketRef.current.on("eventFromServer", (data) => {
-        console.log("Données reçues du serveur:", data);
-      });
-
-      socketRef.current.on("userConnected", (data) => {
-        console.log("userConnected event triggered, data:", data);
-        if (data.pseudo !== storedUser.pseudo) {
-          setMessage(`User ${data.pseudo} est entré dans la salle`);
+        // Ajoutez newPixel et secondNewPixel à la nouvelle grille
+        newGrid.push(newPixel);
+        if (secondPixelResponse) {
+          newGrid.push(secondNewPixel);
         }
+        return newGrid;
       });
+    });
 
-      socketRef.current.on("userDisconnected", (data) => {
-        console.log("userDisconnected event triggered, data:", data);
-        if (data.pseudo !== storedUser.pseudo) {
-          setMessage(`User ${data.pseudo} s'est déconnecté`);
-        }
-      });
-
-      hasConnectedRef.current = true;
-
-      return () => {
-        socketRef.current.disconnect();
-      };
-    }
+    return () => {
+      socketRef.current.off("add-pixel");
+      socketRef.current.disconnect();
+    };
   }, []);
-  useEffect(() => {
-    if (storedUser.pseudo && socketRef.current.connected) {
-      socketRef.current.emit("setUsername", storedUser.pseudo);
-    }
-  }, [socketRef, storedUser.pseudo]);
+  /*  const sendMessage = () => {
+    socketRef.current.emit("client-message", { message: messageRef.current });
+  }; */
+
+  // const socketRef = useRef();
+  // useEffect(() => {
+  //   if (!hasConnectedRef.current) {
+  //     socketRef.current = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
+  //       transports: ["websocket"],
+  //     });
+
+  //     socketRef.current.on("connect", () => {
+  //       console.log("Connecté au serveur");
+  //       socketRef.current.emit("setUsername", storedUser.pseudo);
+  //     });
+
+  //     socketRef.current.on("connect_error", (error) => {
+  //       console.log("Erreur de connexion:", error);
+  //     });
+
+  //     socketRef.current.on("eventFromServer", (data) => {
+  //       console.log("Données reçues du serveur:", data);
+  //     });
+
+  //     socketRef.current.on("userConnected", (data) => {
+  //       console.log("userConnected event triggered, data:", data);
+  //       if (data.pseudo !== storedUser.pseudo) {
+  //         setMessage(`User ${data.pseudo} est entré dans la salle`);
+  //       }
+  //     });
+
+  //     socketRef.current.on("userDisconnected", (data) => {
+  //       console.log("userDisconnected event triggered, data:", data);
+  //       if (data.pseudo !== storedUser.pseudo) {
+  //         setMessage(`User ${data.pseudo} s'est déconnecté`);
+  //       }
+  //     });
+
+  //     socketRef.current.on("disconnect", (reason) => {
+  //       console.log("Déconnecté du serveur:", reason);
+  //     });
+
+  //     hasConnectedRef.current = true;
+
+  //     return () => {
+  //       socketRef.current.disconnect();
+  //     };
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   if (storedUser.pseudo && socketRef.current.connected) {
+  //     socketRef.current.emit("setUsername", storedUser.pseudo);
+  //   }
+  // }, [socketRef, storedUser.pseudo]);
 
   const { id } = useParams();
   const canvasRef = useRef(null);
@@ -116,13 +142,17 @@ export default function Grid() {
   const [penBonusUses, setPenBonusUses] = useState(
     Array(penBonus.length).fill(5)
   );
-  const [animateBomb, setAnimateBomb] = useState(false);
+
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log("Grid ID:", id);
+
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}`
         );
+        console.log("Grid data:", response.data);
+
         setGridData(response.data);
         setGridName(response.data.name);
         setStartTime(new Date(response.data.creation_time));
@@ -130,11 +160,14 @@ export default function Grid() {
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );
+        console.log("Pixel data:", pixelResponse.data);
+
         setGrid(pixelResponse.data);
       } catch (err) {
         console.error(err);
       }
     };
+
     loadData();
   }, [id]);
   /* CHRONO */
@@ -219,13 +252,18 @@ export default function Grid() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.put(
+      const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}`,
         { name: gridName },
         { withCredentials: true }
       );
+      if (response.status !== 200) {
+        error("Une erreur est survenue");
+      } else {
+        success("Nom de la grille modifié");
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Error updating grid:", err.response || err.message);
     }
   };
   /* GESTION BOUTONS */
@@ -302,7 +340,10 @@ export default function Grid() {
         y_coordinate: y,
       };
 
-      socketRef.current.emit("add-pixel", newPixel);
+      if (socketRef.current) {
+        socketRef.current.emit("add-pixel", newPixel);
+      }
+      UWebSocket.sendMessage("add-pixel", newPixel);
 
       let secondPixelResponse;
       let activePenBonusIndex = activePenBonus.findIndex(
@@ -326,7 +367,10 @@ export default function Grid() {
           y_coordinate: y,
         };
 
-        socketRef.current.emit("add-pixel", secondNewPixel);
+        if (socketRef.current) {
+          socketRef.current.emit("add-pixel", secondNewPixel);
+        }
+        UWebSocket.sendMessage("add-pixel", secondNewPixel);
 
         setPenBonusUses((prevUses) => {
           const newUses = [...prevUses];
@@ -354,7 +398,7 @@ export default function Grid() {
       setLastPixelTime(now);
       setUserPixelCount((prevCount) => {
         const newCount = prevCount + 1;
-        if (newCount === 4) {
+        if (newCount === 19) {
           setBombBonus((prevBonuses) => [...prevBonuses, {}]);
           return 0;
         } else {
@@ -409,8 +453,10 @@ export default function Grid() {
           { withCredentials: true }
         );
 
-        // Émettez l'événement 'remove-pixel' avec l'ID du pixel supprimé
-        socketRef.current.emit("remove-pixel", selectedPixel.id);
+        if (socketRef.current) {
+          socketRef.current.emit("remove-pixel", selectedPixel.id);
+        }
+        UWebSocket.sendMessage("remove-pixel", selectedPixel.id);
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );
@@ -430,8 +476,9 @@ export default function Grid() {
           }`,
           { withCredentials: true }
         );
-
-        socketRef.current.emit("remove-pixel", selectedPixel.id);
+        if (socketRef.current) {
+          socketRef.current.emit("remove-pixel", selectedPixel.id);
+        }
         setBombBonus((prevBonus) => {
           const newBonus = [...prevBonus];
           newBonus.splice(newBonus.length - activeBomb, 1);
@@ -455,12 +502,7 @@ export default function Grid() {
     const y = Math.floor((event.clientY - rect.top) / pixelSize);
     setClickX(x);
     setClickY(y);
-    console.log("pen:", pen);
-    console.log("activePenBonus:", activePenBonus);
-    console.log("activeBomb:", activeBomb);
-    console.log("eraser:", eraser);
-    console.log("Before if condition, pen:", pen);
-    console.log("Before if condition, activePenBonus:", activePenBonus);
+
     if (stop === false) {
       if (pen || activePenBonus.some((value) => value)) {
         console.log("Inside if condition, calling handleAddPixel");
@@ -502,7 +544,7 @@ export default function Grid() {
           <div className="chrono-container">
             <p>{formatTime(elapsedTime)}</p>
           </div>
-          {storedUser.id === gridData.user_id ? (
+          {storedUser.id === (gridData && gridData.user_id) ? (
             <form onSubmit={handleSubmit}>
               <h1>
                 <input
@@ -518,13 +560,6 @@ export default function Grid() {
           ) : (
             <h1 id="un-grid-name">{gridName}</h1>
           )}
-
-          {/*    <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button onClick={sendMessage}>Envoyer</button> */}
         </div>
         {stop && (
           <div className="end-game">
@@ -595,17 +630,32 @@ export default function Grid() {
               </div>
             </div>
           </div>
-          <div className="paint">
-            <Tools
-              pen={pen}
-              eraser={eraser}
-              handlePen={handlePen}
-              handleEraser={handleEraser}
-            />
-            <ColorSlider color={color} handleColorChange={handleColorChange} />
-          </div>
+
+          {storedUser && (
+            <div className="paint">
+              <Tools
+                pen={pen}
+                eraser={eraser}
+                handlePen={handlePen}
+                handleEraser={handleEraser}
+              />
+              <ColorSlider
+                color={color}
+                handleColorChange={handleColorChange}
+              />
+            </div>
+          )}
         </div>
       </section>
+      <button
+        onClick={() => {
+          console.log("send-message");
+          UWebSocket.sendMessage("add-pixel", "newPixel");
+        }}
+        style={{ zIndex: 3 }}
+      >
+        Test
+      </button>
     </div>
   );
 }

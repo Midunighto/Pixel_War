@@ -22,11 +22,11 @@ function App() {
         withCredentials: true,
       })
       .then((res) => {
-        const { id, pseudo, theme, email } = res.data;
-        const userData = { id, pseudo, theme, email };
+        const { id, pseudo, theme, email, isAdmin } = res.data;
+        const userData = { id, pseudo, theme, email, isAdmin };
 
         setStoredUser(userData);
-        Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+        Cookies.set("user", JSON.stringify(userData), { expires: 1 });
       })
       .catch((err) => {
         setStoredUser(false);
@@ -65,6 +65,12 @@ function App() {
       $("body").ripples("destroy");
     };
   }, []);
+
+  useEffect(() => {
+    storedUser.theme === 2
+      ? document.body.classList.add("light")
+      : document.body.classList.remove("light");
+  }, [storedUser.theme]);
 
   return (
     <>

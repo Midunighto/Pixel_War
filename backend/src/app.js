@@ -54,9 +54,8 @@ io.on("connection", (socket) => {
     io.emit("userConnected", { username });
   });
 
-  socket.on("client-message", (data) => {
-    console.log(data);
-    io.emit("server-message", data);
+  socket.on("add-pixel", (newPixel) => {
+    console.log("Received new pixel:", newPixel);
   });
 
   socket.on("disconnect", () => {

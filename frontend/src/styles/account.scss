@@ -4,7 +4,9 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
+  padding: 0 25px;
+  width: 70%;
+  gap: 10px;
   h1 {
     align-self: flex-start;
   }
@@ -20,8 +22,28 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
     .btn {
       font-size: 0.7rem;
+    }
+    p {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      input {
+        width: 150px;
+        height: 30px;
+        background-color: $primary-color-transparent;
+        backdrop-filter: blur(10px);
+        border: none;
+        border-bottom: 1px solid white;
+        z-index: 2;
+        cursor: text;
+        border-radius: 30px;
+        padding: 2px;
+        text-align: center;
+        color: $font-color-white;
+      }
     }
     span {
       font-weight: 600;
@@ -32,6 +54,7 @@
     height: 1px;
     background-color: $font-color-white;
   }
+
   .account-footer {
     display: flex;
     flex-direction: column;
@@ -47,18 +70,5 @@
         opacity: 50%;
       }
     }
-  }
-}
-
-.modal-account {
-  h1 {
-    text-align: center;
-  }
-  small {
-    color: $font-color-white;
-  }
-  .button-row {
-    display: flex;
-    gap: 30px;
   }
 }

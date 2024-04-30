@@ -1,0 +1,81 @@
+@import "../styles/root.scss";
+
+.grids-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 25px;
+
+  .header {
+    padding: 0 25px;
+    align-self: flex-start;
+    display: flex;
+    margin-bottom: 30px;
+    width: 80%;
+
+    .header-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      h1 {
+        margin: 0;
+      }
+    }
+  }
+  .grids-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    gap: 40px;
+    padding: 0 25px;
+    .grid-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 200px;
+      height: 250px;
+      border-radius: 30px;
+
+      margin-top: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s;
+      &:hover {
+        transform: scale(1.1);
+      }
+      .grid-foil {
+        position: absolute;
+        background-color: rgba(211, 211, 211, 0.6);
+        width: calc(40px * 5);
+        height: calc(40px * 5);
+        margin: auto 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 17px;
+        p {
+          color: $font-color-dark;
+        }
+      }
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+      p {
+        color: $font-color-white;
+        margin: 0;
+      }
+
+      .grid-card-footer {
+        color: $font-color-white;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+    }
+  }
+}

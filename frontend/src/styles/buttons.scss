@@ -203,3 +203,17 @@ svg {
   height: 1px;
   visibility: hidden;
 }
+
+.light {
+  .blob-btn-light,
+  .blob-btn-dark {
+    background-color: $fourth-color;
+    color: $font-color-dark;
+    &:hover {
+      color: $font-color-white;
+    }
+    &__blob {
+      background: $secondary-color;
+    }
+  }
+}
