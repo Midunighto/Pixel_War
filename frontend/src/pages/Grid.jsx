@@ -31,44 +31,62 @@ export default function Grid() {
   const [showPixelInfos, setShowPixelInfos] = useState(false);
   /* web socket */
   const [message, setMessage] = useState("");
-
-  //// Créer une instance de socket en dehors des fonctions
-  const socket = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
-    transports: ["websocket"],
-  });
+  const hasConnectedRef = useRef(false);
 
   const sendMessage = () => {
-    socket.emit("client-message", { message });
+    socketRef.current.emit("client-message", { message: messageRef.current });
   };
 
   const socketRef = useRef();
-
   useEffect(() => {
-    socketRef.current = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
-      transports: ["websocket"],
-    });
+    if (!hasConnectedRef.current) {
+      socketRef.current = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
+        transports: ["websocket"],
+      });
 
-    socketRef.current.on("connect", () => {
-      console.log("Connecté au serveur");
-    });
+      socketRef.current.on("connect", () => {
+        console.log("Connecté au serveur");
+        socketRef.current.emit("setUsername", storedUser.pseudo);
+      });
 
-    socketRef.current.on("connect_error", (error) => {
-      console.log("Erreur de connexion:", error);
-    });
+      socketRef.current.on("connect_error", (error) => {
+        console.log("Erreur de connexion:", error);
+      });
 
-    socketRef.current.on("disconnect", (reason) => {
-      console.log("Déconnecté du serveur:", reason);
-    });
+      socketRef.current.on("disconnect", (reason) => {
+        console.log("Déconnecté du serveur:", reason);
+      });
 
-    socketRef.current.on("eventFromServer", (data) => {
-      console.log("Données reçues du serveur:", data);
-    });
+      socketRef.current.on("eventFromServer", (data) => {
+        console.log("Données reçues du serveur:", data);
+      });
 
-    return () => {
-      socketRef.current.disconnect();
-    };
-  }, []); // Passer un tableau vide pour exécuter l'effet une seule fois à l'initialisation du composant
+      socketRef.current.on("userConnected", (data) => {
+        console.log("userConnected event triggered, data:", data);
+        if (data.pseudo !== storedUser.pseudo) {
+          setMessage(`User ${data.pseudo} est entré dans la salle`);
+        }
+      });
 
+      socketRef.current.on("userDisconnected", (data) => {
+        console.log("userDisconnected event triggered, data:", data);
+        if (data.pseudo !== storedUser.pseudo) {
+          setMessage(`User ${data.pseudo} s'est déconnecté`);
+        }
+      });
+
+      hasConnectedRef.current = true;
+
+      return () => {
+        socketRef.current.disconnect();
+      };
+    }
+  }, []);
+  useEffect(() => {
+    if (storedUser.pseudo && socketRef.current.connected) {
+      socketRef.current.emit("setUsername", storedUser.pseudo);
+    }
+  }, [socketRef, storedUser.pseudo]);
   const { id } = useParams();
   const canvasRef = useRef(null);
   /* state pour récupérer les coordonnées du click */
@@ -192,20 +210,45 @@ export default function Grid() {
     }
   };
   /* GESTION BOUTONS */
+  const handlePen = () => {
+    setPen(!pen);
+    setEraser(false);
+    setActiveBomb(Array.from({ length: bombBonus.length }, () => false));
+    setActivePenBonus(Array.from({ length: penBonus.length }, () => false));
+  };
+
+  const handleEraser = () => {
+    setEraser(!eraser);
+    setPen(false);
+    setActiveBomb(Array.from({ length: bombBonus.length }, () => false));
+    setActivePenBonus(Array.from({ length: penBonus.length }, () => false));
+  };
+
   const handleBombBonusClick = (index) => {
     const newActiveBomb = Array.from({ length: bombBonus.length }, () => false);
-    newActiveBomb[index] = true;
+    if (activeBomb[index] !== true) {
+      newActiveBomb[index] = true;
+    }
     setActiveBomb(newActiveBomb);
+    setActivePenBonus(Array.from({ length: penBonus.length }, () => false));
+    setEraser(false);
+    setPen(false);
   };
+
   const handlePenBonusClick = (index) => {
     const newActivePenBonus = Array.from(
       { length: penBonus.length },
       () => false
     );
-    newActivePenBonus[index] = true;
+    if (activePenBonus[index] !== true) {
+      newActivePenBonus[index] = true;
+    }
     setActivePenBonus(newActivePenBonus);
+    setActiveBomb(Array.from({ length: bombBonus.length }, () => false));
+    setEraser(false);
+    setPen(false);
+    console.log(activePenBonus);
   };
-
   /* INTÉRACTIVITÉ JEU */
 
   const handleAddPixel = async (x, y) => {
@@ -246,7 +289,9 @@ export default function Grid() {
       let activePenBonusIndex = activePenBonus.findIndex(
         (bonus) => bonus === true
       );
+      let secondNewPixel = null;
       if (activePenBonusIndex !== -1) {
+        console.log("dans la condition bonus", activePenBonusIndex);
         const secondPixelData = { ...pixelData, x_coordinate: x + 1 };
         secondPixelResponse = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`,
@@ -254,7 +299,7 @@ export default function Grid() {
           { withCredentials: true }
         );
 
-        const secondNewPixel = {
+        secondNewPixel = {
           id: secondPixelResponse.data.insertId,
           color: color.hex,
           user_pseudo: pixelData.user_pseudo,
@@ -299,11 +344,19 @@ export default function Grid() {
         }
       });
 
-      setGrid((prevGrid) => [
-        ...prevGrid,
-        newPixel,
-        ...(secondPixelResponse ? [secondNewPixel] : []),
-      ]);
+      setGrid((prevGrid) => {
+        // Créez une copie de la grille précédente
+        const newGrid = [...prevGrid];
+
+        // Ajoutez newPixel et secondNewPixel à la nouvelle grille
+        newGrid.push(newPixel);
+        if (secondPixelResponse) {
+          newGrid.push(secondNewPixel);
+        }
+
+        // Renvoyez la nouvelle grille
+        return newGrid;
+      });
     } catch (err) {
       console.error(err);
     }
@@ -390,16 +443,6 @@ export default function Grid() {
     }
   };
 
-  const handlePen = () => {
-    setPen(!pen);
-    setEraser(false);
-  };
-
-  const handleEraser = () => {
-    setEraser(!eraser);
-    setPen(false);
-  };
-
   const handleColorChange = (newColor) => {
     setColor(newColor);
   };
@@ -428,6 +471,7 @@ export default function Grid() {
         </div>
         <div className="grid-area-container">
           <div className="game-wrapper">
+            <p className="message">{message}</p>
             <div className="canva-container">
               <Canvas
                 canvasRef={canvasRef}

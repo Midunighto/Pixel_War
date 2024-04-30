@@ -76,9 +76,15 @@
         justify-content: space-around;
         width: 100%;
         position: relative;
+        .message {
+          position: absolute;
+          bottom: 20px;
+          right: 10px;
+          text-wrap: wrap;
+        }
         .bonus {
           position: absolute;
-          right: 200px;
+          right: 50px;
           display: flex;
           flex-direction: row;
           gap: 15px;

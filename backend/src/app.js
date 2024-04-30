@@ -44,8 +44,15 @@ const io = socketIo(server, {
 });
 
 /* gérer la connexion */
+const users = {};
+
 io.on("connection", (socket) => {
   console.log("New client connected");
+
+  socket.on("setUsername", (username) => {
+    users[socket.id] = username;
+    io.emit("userConnected", { username });
+  });
 
   socket.on("client-message", (data) => {
     console.log(data);
@@ -54,10 +61,15 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
+    const username = users[socket.id];
+    if (username) {
+      delete users[socket.id];
+      io.emit("userDisconnected", { username });
+    }
   });
 });
+
 server.listen(port, () => {
   console.log(`Serveur en cours d'exécution sur le port ${port}`);
 });
-
 module.exports = app;
