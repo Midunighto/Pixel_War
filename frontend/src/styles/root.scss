@@ -100,8 +100,9 @@ footer {
   p,
   small,
   span,
-  li {
-    color: $font-color-dark;
+  li,
+  .btn {
+    color: $font-color-dark !important;
   }
   .line {
     background-color: $font-color-dark;
@@ -166,4 +167,15 @@ table th {
   text-align: left;
   background-color: $secondary-color;
   color: $font-color-white;
+}
+/* 404 */
+.error {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  a {
+    color: $font-color-white;
+  }
 }

@@ -29,6 +29,8 @@
     align-items: center;
     @media screen and (max-width: 430px) {
       justify-content: center;
+      align-items: center;
+      padding: 0;
     }
     .grid-card {
       display: flex;
