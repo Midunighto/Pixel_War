@@ -170,7 +170,7 @@ export default function SignUp() {
           <img src={whitelogo} alt="logo" width={276} height={201} />
         </section>
       )}
-      ;{openModal && <SignIn />}
+      {openModal && <SignIn />}
     </div>
   );
 }
