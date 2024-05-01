@@ -80,7 +80,10 @@ export default function Account() {
 
   const handleMailSubmit = async (event) => {
     event.preventDefault();
-    const newMail = mailRef.current.value;
+    let newMail = mailRef.current.value;
+    if (!newMail) {
+      newMail = mailRef.current.placeholder;
+    }
     try {
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/${storedUser.id}/mail`,
@@ -97,9 +100,16 @@ export default function Account() {
       error("Une erreur est survenue, merci de réessayer");
     }
   };
+
   const handlePwdSubmit = async (event) => {
     event.preventDefault();
     const newPwd = pwdRef.current.value;
+
+    if (!newPwd.trim()) {
+      error("Le champ du mot de passe ne peut pas être vide");
+      return;
+    }
+
     try {
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/${
