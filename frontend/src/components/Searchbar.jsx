@@ -13,7 +13,7 @@ function Searchbar({ searchValue, setSearchValue, placeholder }) {
   return (
     <div className="search-container">
       <img
-        src={storedUser.theme === 1 ? loupew : loupeb}
+        src={storedUser.theme === 2 ? loupeb : loupew}
         alt="Searchbar icon"
         width={20}
       />
