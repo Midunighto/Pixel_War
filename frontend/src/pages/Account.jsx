@@ -178,13 +178,6 @@ export default function Account() {
             width={100}
           />
           <p>{storedUser.pseudo}</p>
-
-          {/*  <Button
-            className="blob-btn-light"
-            onClick={() => console.log("to do")}
-          >
-            Modifier mon avatar
-          </Button> */}
           <div className="line" />
           <div className="group">
             <p>

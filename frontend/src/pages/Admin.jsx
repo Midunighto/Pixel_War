@@ -38,19 +38,16 @@ export default function Admin() {
                   grid.id
                 }/pixels/`
               );
-              console.log("pixelsResponse", pixelsResponse.data);
-              // Return the grid object with an additional pixels property
+
               return { ...grid, pixels: pixelsResponse.data };
             } catch (err) {
               console.error(err);
-              // Return the grid object with an empty pixels array in case of an error
+
               return { ...grid, pixels: [] };
             }
           }
         );
-
         const gridsWithPixels = await Promise.all(gridsWithPixelsPromises);
-        console.log("gridsWithPixels", gridsWithPixels);
 
         setUsers(usersResponseData.data);
         setGrids(gridsWithPixels);

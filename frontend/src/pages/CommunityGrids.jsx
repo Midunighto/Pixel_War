@@ -38,7 +38,6 @@ export default function CommunityGrids() {
                   grid.id
                 }/pixels/`
               );
-              console.log("pixelsResponse", pixelsResponse.data);
 
               return { ...grid, pixels: pixelsResponse.data };
             } catch (err) {
@@ -50,7 +49,6 @@ export default function CommunityGrids() {
         );
 
         const gridsWithPixels = await Promise.all(gridsWithPixelsPromises);
-        console.log("gridsWithPixels", gridsWithPixels);
 
         setGrids(gridsWithPixels);
         setDataLoaded(true);
@@ -73,8 +71,8 @@ export default function CommunityGrids() {
         const ctx = canvas.getContext("2d");
 
         // Dessiner un damier
-        const numX = nbPixels; // Nombre de "pixels" en largeur
-        const numY = nbPixels; // Nombre de "pixels" en hauteur
+        const numX = nbPixels;
+        const numY = nbPixels;
 
         for (let i = 0; i < numX; i++) {
           for (let j = 0; j < numY; j++) {

@@ -45,7 +45,6 @@ export default function MyGrids() {
         );
 
         const gridsWithPixels = await Promise.all(gridsWithPixelsPromises);
-        console.log("gridsWithPixels", gridsWithPixels);
 
         setGrids(gridsWithPixels);
       } catch (err) {

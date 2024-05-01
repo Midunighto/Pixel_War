@@ -128,12 +128,9 @@ export default function Grid() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log("Grid ID:", id);
-
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}`
         );
-        console.log("Grid data:", response.data);
 
         setGridData(response.data);
         setGridName(response.data.name);
@@ -142,7 +139,6 @@ export default function Grid() {
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );
-        console.log("Pixel data:", pixelResponse.data);
 
         setGrid(pixelResponse.data);
       } catch (err) {
@@ -295,7 +291,6 @@ export default function Grid() {
     setActiveBomb(Array.from({ length: bombBonus.length }, () => false));
     setEraser(false);
     setPen(false);
-    console.log(activePenBonus);
   };
   /* INTÉRACTIVITÉ JEU */
 
@@ -396,7 +391,6 @@ export default function Grid() {
           return newCount;
         }
       });
-      console.log("userPixelCount", userPixelCount);
 
       setGrid((prevGrid) => {
         // Créez une copie de la grille précédente
@@ -425,7 +419,7 @@ export default function Grid() {
         (pixel) =>
           pixel.x_coordinate === pixelX && pixel.y_coordinate === pixelY
       );
-      console.log("pixel", selectedPixel);
+      /*       console.log("pixel", selectedPixel); */
       if (
         eraser &&
         selectedPixel &&
@@ -496,10 +490,8 @@ export default function Grid() {
 
     if (stop === false) {
       if (pen || activePenBonus.some((value) => value)) {
-        console.log("Inside if condition, calling handleAddPixel");
         handleAddPixel(x, y);
       } else if (eraser || activeBomb.some((value) => value)) {
-        console.log("Inside else if condition, calling handleErasePixel");
         handleErasePixel(x, y);
       } else {
         const pixel = grid.find(
@@ -645,7 +637,7 @@ export default function Grid() {
             </div>
           </div>
 
-          {storedUser && (
+          {storedUser && !stop && (
             <div className="paint">
               <Tools
                 pen={pen}
@@ -661,7 +653,7 @@ export default function Grid() {
           )}
         </div>
       </section>
-      <button
+      {/*   <button
         onClick={() => {
           console.log("send-message");
           UWebSocket.sendMessage("add-pixel", "newPixel");
@@ -669,7 +661,7 @@ export default function Grid() {
         style={{ zIndex: 3 }}
       >
         Test
-      </button>
+      </button> */}
     </div>
   );
 }

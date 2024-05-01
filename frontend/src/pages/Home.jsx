@@ -26,7 +26,7 @@ export default function Home() {
           user_id: storedUser.id,
         }
       );
-      console.log(response);
+
       navigate(`/grid/${response.data}`);
     } catch (error) {
       console.error(error);
