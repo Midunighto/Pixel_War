@@ -18,6 +18,7 @@ import Grid from "./pages/Grid";
 import CommunityGrids from "./pages/CommunityGrids";
 import MyGrids from "./pages/MyGrids";
 import Admin from "./pages/Admin";
+import Terms from "./pages/Terms";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/community-grids",
         element: <CommunityGrids />,
+      },
+      {
+        path: "/terms",
+        element: <Terms />,
       },
       {
         element: <ProtectedRoute />,

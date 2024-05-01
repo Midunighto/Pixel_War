@@ -72,8 +72,6 @@ export default function SignUp() {
         setCreated(true);
         toggleModal();
       }
-
-      console.info(res.status);
     } catch (err) {
       if (err.response) {
         if (err.response.status === 409) {
@@ -154,7 +152,7 @@ export default function SignUp() {
               <div className="uses">
                 <input type="checkbox" name="uses" id="use" />
                 <label htmlFor="uses">
-                  Accepter les <Link to="404">conditions d'utilisation</Link>
+                  Accepter les <Link to="/terms">conditions d'utilisation</Link>
                 </label>
               </div>
               <Button type="submit" className="blob-btn-dark">

@@ -74,7 +74,7 @@
 
     .btn:nth-of-type(2) {
       background-color: transparent;
-      color: red;
+      color: red !important;
       border: none;
       cursor: pointer;
       z-index: 3;
