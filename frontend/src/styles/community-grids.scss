@@ -27,6 +27,41 @@
         margin: 0;
       }
     }
+    .row {
+      display: flex;
+      align-items: flex-end;
+      gap: 50px;
+      @media screen and (max-width: 430px) {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+      .search-container {
+        display: flex;
+        gap: 10px;
+        @media screen and (max-width: 430px) {
+          justify-content: center;
+          width: 100%;
+        }
+        input {
+          width: 250px;
+          height: 30px;
+          background-color: $primary-color-transparent;
+          backdrop-filter: blur(10px);
+          border: none;
+          border-bottom: 1px solid white;
+          z-index: 2;
+          border-radius: 30px;
+          padding: 2px;
+          text-align: center;
+          color: $font-color-white;
+        }
+      }
+    }
+    .btn {
+      width: fit-content;
+      margin-top: 20px;
+    }
   }
   .grids-wrapper {
     display: flex;

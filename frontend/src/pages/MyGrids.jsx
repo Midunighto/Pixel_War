@@ -90,12 +90,34 @@ export default function MyGrids() {
     });
   }, [grids, canvasRefs, nbPixels, pixelSize]);
 
+  const handleCreateGrid = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/grids`,
+        {
+          user_id: storedUser.id,
+        }
+      );
+
+      navigate(`/grid/${response.data}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="page">
       <section className="my-grids">
         <div className="header">
           <h1>Mes Grilles</h1>
           <p>Retrouve ici toutes les griles que tu as créées !</p>
+          <Button
+            type="button"
+            className="blob-btn-dark"
+            onClick={handleCreateGrid}
+          >
+            Créer une grille
+          </Button>
         </div>
         {loading ? (
           <Loader />

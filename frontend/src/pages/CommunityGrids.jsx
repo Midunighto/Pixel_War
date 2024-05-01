@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import Canvas from "../components/Canvas";
 import Loader from "../components/Loader";
+import Searchbar from "../components/Searchbar";
 import { useNavigate } from "react-router-dom";
 
 import { useStoredUser } from "../contexts/UserContext";
@@ -17,6 +18,7 @@ export default function CommunityGrids() {
   const [grids, setGrids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const canvasRefs = grids.map(() => React.createRef());
 
@@ -94,6 +96,26 @@ export default function CommunityGrids() {
       }
     });
   }, [grids, canvasRefs, nbPixels, pixelSize]);
+
+  const handleCreateGrid = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/grids`,
+        {
+          user_id: storedUser.id,
+        }
+      );
+
+      navigate(`/grid/${response.data}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const filteredGrids = grids.filter((element) =>
+    element.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   return (
     <div className="page">
       <section className="grids-container">
@@ -104,6 +126,21 @@ export default function CommunityGrids() {
               Retrouve ici les grilles créées par les autres joueurs de la
               communauté Pixel Wars !
             </p>
+            <div className="row">
+              <Button
+                type="button"
+                className="blob-btn-dark"
+                onClick={handleCreateGrid}
+              >
+                Créer une grille
+              </Button>
+
+              <Searchbar
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                placeholder="Rechercher une grille par nom"
+              />
+            </div>
           </div>
 
           <img
@@ -116,7 +153,7 @@ export default function CommunityGrids() {
           <Loader />
         ) : (
           <div className="grids-wrapper">
-            {grids
+            {filteredGrids
               .sort(
                 (a, b) => new Date(b.creation_time) - new Date(a.creation_time)
               )
