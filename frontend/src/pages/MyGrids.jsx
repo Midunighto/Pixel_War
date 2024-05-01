@@ -111,14 +111,14 @@ export default function MyGrids() {
         <div className="header">
           <h1>Mes Grilles</h1>
           <p>Retrouve ici toutes les griles que tu as créées !</p>
-          <Button
-            type="button"
-            className="blob-btn-dark"
-            onClick={handleCreateGrid}
-          >
-            Créer une grille
-          </Button>
         </div>
+        <Button
+          type="button"
+          className="blob-btn-dark"
+          onClick={handleCreateGrid}
+        >
+          Créer une grille
+        </Button>
         {loading ? (
           <Loader />
         ) : (

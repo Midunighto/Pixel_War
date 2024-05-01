@@ -158,10 +158,12 @@
               top: 40px;
               right: 10px;
               font-size: 0.7rem;
-              text-align: center;
+              text-align: left;
+              gap: 5px;
               color: $font-color-white;
               background-color: $secondary-color-transparent;
               box-shadow: 8px 8px 51px -15px rgba(66, 68, 90, 1);
+              padding: 5px;
               @media screen and (max-width: 430px) {
                 top: 65px;
               }
@@ -171,6 +173,7 @@
               p {
                 font-size: 0.9rem;
                 color: red !important;
+                text-align: center;
               }
             }
           }
