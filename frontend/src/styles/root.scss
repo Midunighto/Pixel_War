@@ -11,7 +11,7 @@ $primary-color-transparent: #2c253866;
 $secondary-color: #5c5470;
 $secondary-color-transparent: #5c547066;
 $tertiary-color: #dbd8e3;
-
+$fourth-color: #38304866;
 * {
   margin: 0;
   padding: 0;
@@ -28,16 +28,47 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 160px 0;
-
+  display: flex;
+  flex-direction: column;
+  @media screen and (max-width: 430px) {
+    max-width: 430px;
+    padding: 120px 0;
+  }
   .btn {
     font-weight: 400;
   }
   h1 {
     font-size: 2.4rem;
     font-weight: 400;
+    @media screen and (max-width: 430px) {
+      font-size: 1.9rem;
+    }
+  }
+  h2 {
+    @media screen and (max-width: 430px) {
+      font-size: 1.5rem;
+    }
   }
 }
-
+.loader {
+  width: 200px;
+  height: 40px;
+  animation: slide 2s linear infinite;
+  margin-left: -20px;
+  margin-top: -20px;
+  position: absolute;
+  top: 400px;
+  left: 45svw;
+  z-index: 200;
+}
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
 .hidden {
   display: none;
 }
@@ -52,57 +83,87 @@ footer {
   color: $font-color-white;
   font-size: 0.7rem;
 }
-/* DARK MODE */
-/* .dark {
-  background-image: url(../assets/background-dark.png);
+/* LIGHT MODE */
+.light {
+  background-color: $tertiary-color;
   color: $font-color-dark;
   nav {
     a {
-      color: $font-color-white !important;
-    }
-    .line {
-      background-color: $font-color-white;
-    }
-  }
-  .container {
-    p,
-    .title,
-    small {
-      color: $font-color-white;
-    }
-    .wishlists {
-      .list-row {
-        border-bottom: 1px solid #575757;
-      }
+      color: $font-color-dark !important;
+      line-height: 1.6;
     }
   }
 
+  h1,
   h2,
   button,
-  .wrapper > h1 {
-    color: $font-color-white;
-  }
-  .list-container {
-    color: $font-color-dark;
-    h1,
-    h2 {
-      color: $font-color-dark;
-    }
-    a {
-      background-color: $tertiary-color !important;
-    }
-  }
-  button.add-item,
-  button.validate-button {
-    background-color: $tertiary-color !important;
-    color: $font-color-white;
-  }
-  button.new-wish {
-    background-color: $font-color-white !important;
+  p,
+  small,
+  span,
+  li {
     color: $font-color-dark;
   }
+  .line {
+    background-color: $font-color-dark;
+  }
+
   footer {
+    color: $font-color-dark;
+  }
+  table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: $secondary-color;
+    color: $font-color-dark;
+  }
+  .hamburger-react {
+    color: $font-color-dark;
+  }
+  .burger {
+    background-color: $tertiary-color;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: $tertiary-color;
     color: $font-color-white;
   }
 }
- */
+
+/* TABLEAU */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  @media screen and (max-width: 430px) {
+    width: 300px;
+  }
+}
+
+table th,
+table td {
+  border: 1px solid $font-color-dark;
+  padding: 8px;
+  color: $font-color-white;
+}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: $secondary-color;
+  color: $font-color-white;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function Canvas({ nbPixels, pixelSize, handleCanvasClick, canvasRef }) {
+function Canvas({ nbPixels, pixelSize, handleCanvasClick, canvasRef, pixels }) {
   return (
     <canvas
       ref={canvasRef}
@@ -9,6 +9,7 @@ function Canvas({ nbPixels, pixelSize, handleCanvasClick, canvasRef }) {
       height={nbPixels * pixelSize}
       className="canva"
       onClick={handleCanvasClick}
+      pixels={pixels}
     />
   );
 }

@@ -15,6 +15,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
 import Grid from "./pages/Grid";
+import CommunityGrids from "./pages/CommunityGrids";
+import MyGrids from "./pages/MyGrids";
+import Admin from "./pages/Admin";
 
 const router = createBrowserRouter([
   {
@@ -34,11 +37,23 @@ const router = createBrowserRouter([
         element: <Grid />,
       },
       {
+        path: "/community-grids",
+        element: <CommunityGrids />,
+      },
+      {
         element: <ProtectedRoute />,
         children: [
           {
             path: "/account",
             element: <Account />,
+          },
+          {
+            path: "/my-grids",
+            element: <MyGrids />,
+          },
+          {
+            path: "/29119510",
+            element: <Admin />,
           },
         ],
       },

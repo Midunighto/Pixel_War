@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import Switch from "@mui/material/Switch";
@@ -7,26 +8,28 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { useStoredUser } from "../contexts/UserContext";
-import { useModal } from "../contexts/ModalContext";
 
 import { error, success } from "../services/toast";
 
 import Home from "./Home";
 import Button from "../components/Button";
 import avatar from "../assets/painter.svg";
+import avatarblack from "../assets/painter-black.svg";
 
 import "../styles/account.scss";
 import Delete from "../components/Delete";
 
 export default function Account() {
+  const navigate = useNavigate();
   const { storedUser, setStoredUser } = useStoredUser();
-  const { openModal, toggleModal } = useModal();
+  const [openModal, setOpenModal] = useState(false);
+  const [mail, setMail] = useState(false);
+  const [pwd, setPwd] = useState(false);
+  const mailRef = useRef();
+  const pwdRef = useRef();
 
-  const [darkTheme, setDarkTheme] = useState(false);
-  /* openModal vaut true après qu'on se soit connecté, réinitialise l'état à false */
-  useEffect(() => {
-    toggleModal(false);
-  }, []);
+  const [lightTheme, setLightTheme] = useState(false);
+
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
     height: 34,
@@ -46,12 +49,12 @@ export default function Account() {
         "& + .MuiSwitch-track": {
           opacity: 1,
           backgroundColor:
-            theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
+            theme.palette.mode === "dark" ? "#dbd8e3" : "#aab4be",
         },
       },
     },
     "& .MuiSwitch-thumb": {
-      backgroundColor: theme.palette.mode === "dark" ? "#003892" : "#ec5c5c",
+      backgroundColor: theme.palette.mode === "dark" ? "#5c5470" : "#5c5470",
       width: 32,
       height: 32,
       "&::before": {
@@ -70,11 +73,46 @@ export default function Account() {
     },
     "& .MuiSwitch-track": {
       opacity: 1,
-      backgroundColor: theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
+      backgroundColor: theme.palette.mode === "dark" ? "#5c5470" : "#aab4be",
       borderRadius: 20 / 2,
     },
   }));
 
+  const handleMailSubmit = async (event) => {
+    event.preventDefault();
+    const newMail = mailRef.current.value;
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${storedUser.id}/mail`,
+        { mail: newMail }
+      );
+      success("Votre adresse e-mail a été modifiée avec succès");
+      setMail(false);
+      // Mettre à jour l'état storedUser avec la nouvelle adresse e-mail
+      setStoredUser((prevUser) => ({
+        ...prevUser,
+        email: newMail,
+      }));
+    } catch (error) {
+      error("Une erreur est survenue, merci de réessayer");
+    }
+  };
+  const handlePwdSubmit = async (event) => {
+    event.preventDefault();
+    const newPwd = pwdRef.current.value;
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${
+          storedUser.id
+        }/password`,
+        { pwd: newPwd }
+      );
+      success("Votre mot de passe a été modifié avec succès");
+      setPwd(false);
+    } catch (error) {
+      error("Une erreur est survenue, merci de réessayer");
+    }
+  };
   const handleLogout = async () => {
     try {
       await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
@@ -88,15 +126,15 @@ export default function Account() {
   };
 
   const handleChange = () => {
-    setDarkTheme(!darkTheme);
+    setLightTheme(!lightTheme);
     setStoredUser((prevUser) => ({
       ...prevUser,
-      theme: darkTheme ? 2 : 1,
+      theme: lightTheme ? 1 : 2,
     }));
   };
 
   const handleUserTheme = async () => {
-    const updateTheme = { theme: darkTheme ? 2 : 1 };
+    const updateTheme = { theme: lightTheme ? 1 : 2 };
     try {
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/${
@@ -118,8 +156,8 @@ export default function Account() {
           withCredentials: true,
         }
       );
-      handleLogout();
       success("Votre compte a bien été supprimé");
+      handleLogout();
     } catch (err) {
       console.error(
         "Error during delete:",
@@ -130,85 +168,138 @@ export default function Account() {
   };
 
   return (
-    <>
-      {storedUser ? (
-        <div className="page">
-          <section className="account ">
-            <h1>Mon Compte</h1>
-            <div className="account-wrapper">
-              <img src={avatar} alt="account logo" width={100} />
-              <p>{storedUser.pseudo}</p>
+    <div className="page">
+      <section className="account ">
+        <h1>Mon Compte</h1>
+        <div className="account-wrapper">
+          <img
+            src={storedUser.theme === 1 ? avatar : avatarblack}
+            alt="account logo"
+            width={100}
+          />
+          <p>{storedUser.pseudo}</p>
 
+          {/*  <Button
+            className="blob-btn-light"
+            onClick={() => console.log("to do")}
+          >
+            Modifier mon avatar
+          </Button> */}
+          <div className="line" />
+          <div className="group">
+            <p>
+              <span>E-mail :</span>{" "}
+              {mail ? (
+                <form onSubmit={handleMailSubmit}>
+                  <input
+                    type="text"
+                    ref={mailRef}
+                    placeholder={storedUser.email}
+                  />
+                </form>
+              ) : (
+                <em>{storedUser.email}</em>
+              )}
+            </p>
+            {mail ? (
               <Button
                 className="blob-btn-light"
-                onClick={() => console.log("to do")}
+                type="submit"
+                onClick={handleMailSubmit}
               >
-                Modifier mon avatar
+                Confirmer
               </Button>
-              <div className="line" />
-              <div className="group">
-                <p>
-                  <span>E-mail :</span> <em>{storedUser.email}</em>
-                </p>
-                <Button
-                  className="blob-btn-light"
-                  onClick={() => console.log("to do")}
-                >
-                  Modifier mon adresse e-mail
-                </Button>
-              </div>
-              <div className="line" />
-              <div className="group">
-                <p>
-                  <span>Mot de passe : </span>
-                  <em>********</em>
-                </p>
-
-                <Button
-                  className="blob-btn-light"
-                  onClick={() => console.log("to do")}
-                >
-                  Modifier mon mot de passe
-                </Button>
-              </div>
-              <div className="line" />
-              <div className="group">
-                <p>Opter pour le thème {darkTheme ? "sombre" : "clair"}</p>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <MaterialUISwitch
-                        sx={{ m: 1 }}
-                        checked={storedUser.theme === 1}
-                        onChange={(e) => {
-                          handleChange(e);
-                          handleUserTheme();
-                        }}
-                      />
-                    }
-                  />
-                </FormGroup>
-              </div>
-            </div>
-
-            <div className="account-footer">
+            ) : (
+              <Button className="blob-btn-light" onClick={() => setMail(!mail)}>
+                Modifier mon adresse e-mail
+              </Button>
+            )}
+          </div>
+          <div className="line" />
+          <div className="group">
+            <p>
+              <span>Mot de passe : </span>
+              {pwd ? (
+                <form>
+                  <input type="text" ref={pwdRef} placeholder="********" />
+                </form>
+              ) : (
+                <em>********</em>
+              )}
+            </p>
+            {pwd ? (
               <Button
-                type="button"
-                className="blob-btn-dark"
-                onClick={handleLogout}
+                className="blob-btn-light"
+                type="submit"
+                onClick={handlePwdSubmit}
               >
-                Se déconnecter
+                Confirmer
               </Button>
-              <Button type="button" onClick={toggleModal}>
-                supprimer mon compte
+            ) : (
+              <Button className="blob-btn-light" onClick={() => setPwd(!pwd)}>
+                Modifier mon mot de passe
               </Button>
-            </div>
-          </section>
-          {openModal && <Delete handleDelete={handleDelete} />}
+            )}
+          </div>
+          <div className="line" />
+          <div className="group">
+            <p>Opter pour le thème {lightTheme ? "sombre" : "clair"}</p>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <MaterialUISwitch
+                    sx={{ m: 1 }}
+                    checked={storedUser.theme === 1}
+                    onChange={(e) => {
+                      handleChange(e);
+                      handleUserTheme();
+                    }}
+                  />
+                }
+              />
+            </FormGroup>
+          </div>
         </div>
-      ) : (
-        <Home />
+
+        {storedUser.isAdmin === 1 && (
+          <Button
+            type="button"
+            className="blob-btn-dark"
+            onClick={() => navigate("/29119510")}
+          >
+            Administrateur
+          </Button>
+        )}
+        <div className="account-footer">
+          <Button
+            type="button"
+            className="blob-btn-dark"
+            onClick={handleLogout}
+          >
+            Se déconnecter
+          </Button>
+
+          <Button
+            type="button"
+            id="delete"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            supprimer mon compte
+          </Button>
+        </div>
+      </section>
+      {openModal && (
+        <Delete
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          handleDelete={handleDelete}
+          confirmationMessage={
+            "Êtes-vous sûr de vouloir supprimer votre compte ?"
+          }
+        />
       )}
-    </>
+    </div>
   );
 }

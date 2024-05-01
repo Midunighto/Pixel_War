@@ -8,6 +8,12 @@
   margin: 0 auto;
   justify-content: center;
   gap: 20px;
+  @media screen and (max-width: 800px) {
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+  }
+
   .wrapper {
     width: 80%;
     display: flex;
@@ -15,6 +21,16 @@
     align-items: center;
     flex-direction: column;
     gap: 50px;
+    padding-left: 25px;
+    @media screen and (max-width: 800px) {
+      padding: 0;
+    }
+  }
+  img {
+    padding-right: 25px;
+    @media screen and (max-width: 800px) {
+      padding: 0;
+    }
   }
 }
 
@@ -36,10 +52,17 @@ form {
   align-items: center;
   color: $font-color-white;
   gap: 40px;
+  @media screen and (max-width: 800px) {
+    gap: 20px;
+  }
   .group-form {
     display: flex;
     gap: 20px;
     /*       min-width: 400px;  */
+    @media screen and (max-width: 800px) {
+      flex-direction: column;
+      gap: 10px;
+    }
   }
   .input-group {
     display: flex;
@@ -75,39 +98,4 @@ form {
   }
 }
 
-/* CONNEXION */
-.modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100svw;
-  height: 100%;
-  backdrop-filter: blur(5px);
-
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  .modal-content {
-    position: relative;
-    top: 160px;
-    width: 50%;
-    height: 50%;
-    max-height: 500px;
-    max-width: 600px;
-    background-color: $secondary-color-transparent;
-    backdrop-filter: blur(20px);
-    border-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    box-shadow: 9px 12px 41px -5px $primary-color;
-    border: 1px solid $primary-color;
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-  }
-}
+/* voir modals.scss pour la modal de connexion */

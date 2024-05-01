@@ -1,7 +1,7 @@
 @import "../styles/root.scss";
 
 /* AIRE DE JEU */
-.area-page {
+#area-page {
   padding: 80px 0;
 
   .grid-container {
@@ -11,6 +11,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
+
     .header {
       height: 50px;
       display: flex;
@@ -18,29 +19,13 @@
       flex-direction: row;
       width: 70%;
       position: relative;
-      .chrono-container {
-        height: 200px;
-        display: flex;
-        flex-direction: row;
+      @media screen and (max-width: 430px) {
+        width: 50%;
         justify-content: center;
-        position: absolute;
-        left: -100px;
-        top: 10px;
-        p {
-          padding: 10px;
-          width: 100px;
-          border: 1px solid $tertiary-color;
-          height: fit-content;
-          border-radius: 10px;
-          background-color: $secondary-color-transparent;
-          color: $font-color-white;
-          text-align: center;
-          line-height: 2.56;
-          font-size: 1.3rem;
-          font-weight: 500;
-        }
       }
-      form {
+
+      form,
+      #un-grid-name {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -48,6 +33,9 @@
         line-height: 2;
         gap: 10px;
         flex-grow: 1;
+        @media screen and (max-width: 430px) {
+          flex-grow: 0;
+        }
         input {
           width: 400px;
           height: 30px;
@@ -58,10 +46,20 @@
           z-index: 2;
           text-align: center;
           padding: 4px;
+          color: $font-color-white;
           cursor: text;
           border-radius: 30px;
+          @media screen and (max-width: 430px) {
+            width: 200px;
+          }
         }
       }
+      #un-grid-name {
+        margin: 10px 0 0 -20px;
+      }
+    }
+    #elapsed-time {
+      color: red;
     }
     .grid-area-container {
       width: 100%;
@@ -76,13 +74,106 @@
         justify-content: space-around;
         width: 100%;
         position: relative;
+
+        @media screen and (max-width: 430px) {
+          flex-direction: column;
+        }
+        .message {
+          position: absolute;
+          bottom: 20px;
+          right: 10px;
+          text-wrap: wrap;
+        }
+        .chrono-container {
+          height: 200px;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          @media screen and (max-width: 430px) {
+            height: 100px;
+            justify-content: flex-start;
+            padding-left: 10px;
+          }
+          p {
+            padding: 10px;
+            width: 100px;
+            border: 1px solid $tertiary-color;
+            height: fit-content;
+            border-radius: 10px;
+            background-color: $secondary-color-transparent;
+            color: $font-color-white;
+            text-align: center;
+            line-height: 2.56;
+            font-size: 1.3rem;
+            font-weight: 500;
+            @media screen and (max-width: 430px) {
+              padding: 5px;
+            }
+          }
+        }
+        .canva-container {
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          flex-grow: 0.5;
+          @media screen and (max-width: 430px) {
+            margin-bottom: 40px;
+            justify-content: center;
+          }
+          p {
+            color: $font-color-white;
+            background-color: $secondary-color;
+            padding: 3px;
+            border-radius: 5px;
+            box-shadow: 9px 12px 41px -5px #2c253866;
+            width: fit-content;
+            text-wrap: nowrap;
+          }
+        }
         .bonus {
           position: absolute;
-          right: 200px;
+          right: 50px;
           display: flex;
           flex-direction: row;
           gap: 15px;
+          @media screen and (max-width: 430px) {
+            top: 0;
+            right: 0;
+          }
+          .bonus-infos {
+            background-color: $secondary-color-transparent;
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
 
+            .hovered {
+              position: absolute;
+              width: 250px;
+              display: flex;
+              flex-direction: column;
+              top: 40px;
+              right: 10px;
+              font-size: 0.7rem;
+              text-align: center;
+              color: $font-color-white;
+              background-color: $secondary-color-transparent;
+              box-shadow: 8px 8px 51px -15px rgba(66, 68, 90, 1);
+              @media screen and (max-width: 430px) {
+                top: 65px;
+              }
+              ul {
+                list-style: none;
+              }
+              p {
+                font-size: 0.9rem;
+                color: red;
+              }
+            }
+          }
           .bombs-container,
           .pens-container {
             display: flex;
@@ -97,6 +188,7 @@
             border-radius: 10px;
             width: 40px;
             height: 40px;
+
             &:hover {
               background-color: $secondary-color;
               transform: scale(1.1);
@@ -109,21 +201,14 @@
               font-size: 0.8rem;
             }
           }
+          .bomb-animation {
+            img {
+              animation: bomb-animation 2s ease-in-out;
+            }
+          }
           .active {
             background-color: $secondary-color;
             transform: scale(1.1);
-          }
-        }
-        .canva-container {
-          position: relative;
-          p {
-            color: $font-color-white;
-            background-color: $secondary-color;
-            padding: 3px;
-            border-radius: 5px;
-            box-shadow: 9px 12px 41px -5px #2c253866;
-            width: fit-content;
-            text-wrap: nowrap;
           }
         }
       }
@@ -160,5 +245,16 @@
         }
       }
     }
+  }
+}
+@keyframes bomb-animation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
   }
 }

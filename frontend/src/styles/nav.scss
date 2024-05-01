@@ -57,3 +57,21 @@
   background-color: rgba(56, 48, 72, 0.4);
   box-shadow: 9px 12px 41px -5px #2c253866;
 }
+.hamburger-react {
+  z-index: 5;
+  color: $font-color-white;
+}
+.burger {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  padding: 70px 20px 10px 10px;
+  gap: 30px;
+  width: 250px;
+  background-color: #2c2538;
+  box-shadow: 9px 12px 41px -5px #2c253866;
+  border-radius: 0 0 0 50px;
+}

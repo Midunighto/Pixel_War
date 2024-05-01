@@ -10,8 +10,7 @@ export function ModalProvider({ children }) {
   const value = useMemo(
     () => ({
       openModal,
-      toggleModal: (state) =>
-        setOpenModal(state !== undefined ? state : !openModal),
+      toggleModal: () => setOpenModal(!openModal),
     }),
     [openModal]
   );

@@ -48,6 +48,28 @@ const readByUser = async (req, res, next) => {
   }
 };
 
+// EDIT - Update operation
+const edit = async (req, res, next) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
+  try {
+    // Update the grid in the database
+    const updatedGrid = await tables.grid.update(id, { name });
+
+    // If the grid is not found, respond with HTTP 404 (Not Found)
+    // Otherwise, respond with the updated grid in JSON format
+    if (!updatedGrid) {
+      res.status(404).send("Grid not found");
+    } else {
+      res.json(updatedGrid);
+    }
+  } catch (err) {
+    // Pass any errors to the error-handling middleware
+    next(err);
+  }
+};
+
 // ADD - Create operation
 const add = async (req, res, next) => {
   // Extract the grid data from the request body
@@ -90,6 +112,7 @@ module.exports = {
   browse,
   read,
   readByUser,
+  edit,
   add,
   destroy,
 };

@@ -1,5 +1,5 @@
 @import "../styles/root.scss";
-
+@import "../styles/mobile/home.scss";
 h1,
 h2,
 p {
@@ -22,10 +22,21 @@ p {
   display: flex;
   flex-direction: column;
   margin-bottom: 50px;
-
+  padding: 0 25px;
+  @media screen and (max-width: 430px) {
+    padding: 0 10px;
+  }
   .about {
     display: flex;
     gap: 20px;
+    @media screen and (max-width: 430px) {
+      flex-direction: column-reverse;
+    }
+  }
+  img {
+    @media screen and (max-width: 430px) {
+      display: none;
+    }
   }
   .buttons-wrapper {
     display: flex;
@@ -34,6 +45,10 @@ p {
     gap: 30px;
     align-items: center;
     justify-content: flex-start;
+    @media screen and (max-width: 430px) {
+      flex-direction: column;
+      margin-top: 20px;
+    }
   }
 }
 .align-right {
@@ -47,10 +62,19 @@ p {
   gap: 30px;
   width: 70%;
   align-items: end;
+  padding: 0 25px;
+  @media screen and (max-width: 430px) {
+    margin-top: 100px;
+    align-items: center;
+    width: 100%;
+  }
   .rules,
   .bonus2 {
     text-align: right;
     width: 80%;
+    @media screen and (max-width: 430px) {
+      width: 100%;
+    }
   }
   .bonus1 {
     text-align: left;

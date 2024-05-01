@@ -12,12 +12,6 @@ function ColorSlider({ color, handleColorChange }) {
 }
 
 ColorSlider.propTypes = {
-  color: PropTypes.shape({
-    h: PropTypes.number.isRequired,
-    s: PropTypes.number.isRequired,
-    v: PropTypes.number.isRequired,
-    a: PropTypes.number.isRequired,
-  }).isRequired,
   handleColorChange: PropTypes.func.isRequired,
 };
 

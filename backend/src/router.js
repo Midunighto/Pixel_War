@@ -21,6 +21,8 @@ router.post("/users", signup, hashPassword, userControllers.add);
 router.delete("/users/:id", userControllers.destroy);
 
 router.put("/users/:id/addtheme", userControllers.editTheme);
+router.put("/users/:id/mail", userControllers.editMail);
+router.put("/users/:id/password", hashPassword, userControllers.editPwd);
 
 router.post("/login", verifyPassword, userControllers.login);
 router.get("/protected", checkToken, userControllers.refreshToken);
@@ -39,13 +41,15 @@ router.get("/users/:user_id/grids", gridControllers.readByUser);
 // Route to add a new grid
 router.post("/grids", gridControllers.add);
 
+router.put("/grids/:id", gridControllers.edit);
+
 router.delete("/grids/:id", gridControllers.destroy);
 /* ************************************************************************* */
 const pixelControllers = require("./controllers/pixelControllers");
 const { isPixelValid } = require("./middlewares/isPixelValid");
 
 // Route to get all pixel in a specific grid
-router.get("/grids/:grid_id/pixels", pixelControllers.browse);
+router.get("/grids/:grid_id/pixels", pixelControllers.readByGrid);
 
 // Route to get a specific pixel details in a specific grid
 router.get("/grids/:grid_id/pixels/:id", pixelControllers.read);

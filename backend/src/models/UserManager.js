@@ -51,7 +51,21 @@ class UserManager extends AbstractManager {
   }
 
   // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing item
+  async updateMail(mail, id) {
+    const [result] = await this.database.query(
+      `update ${this.table} SET email = ? where id = ?`,
+      [mail, id]
+    );
+    return result;
+  }
+
+  async updatePwd(pwd, id) {
+    const [result] = await this.database.query(
+      `update ${this.table} SET pwd = ? where id = ?`,
+      [pwd, id]
+    );
+    return result;
+  }
   async updateTheme(theme, id) {
     const [result] = await this.database.query(
       `update ${this.table} SET theme = ? where id = ?`,

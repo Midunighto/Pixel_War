@@ -14,7 +14,6 @@ import close from "../assets/close.svg";
 export default function SignIn() {
   const { storedUser, setStoredUser } = useStoredUser();
   const { openModal, toggleModal } = useModal();
-  console.log(openModal);
 
   const [user, setUser] = useState({
     pseudo: "",
@@ -49,7 +48,7 @@ export default function SignIn() {
         setStoredUser(res.data.user);
 
         Cookies.set("user", JSON.stringify(res.data.user), { expires: 7 });
-
+        toggleModal();
         success("Connexion réussie !");
       }
     } catch (err) {
@@ -72,10 +71,10 @@ export default function SignIn() {
   }
 
   return (
-    <div>
+    <div className="page" style={{ padding: 0 }}>
       {openModal && (
         <div className="modal">
-          <div className="modal-content">
+          <div className="modal-content" style={{ top: 100 }}>
             <h1>Connexion</h1>
             <Button type="button" className="close" onClick={toggleModal}>
               <img src={close} alt="close button" width={20} />
@@ -113,11 +112,7 @@ export default function SignIn() {
                 Se connecter
               </Button>
             </form>
-            <Button
-              type="button"
-              className="link-button"
-              onClick={() => setOpenModal(false)}
-            >
+            <Button type="button" className="link-button" onClick={toggleModal}>
               Créer un compte
             </Button>
           </div>

@@ -27,7 +27,12 @@ class GridManager extends AbstractManager {
   // The Rs of CRUD - Read operations
   async getAll() {
     // Execute the SQL SELECT query to retrieve all grids from the "grid" table
-    const [result] = await this.database.query(`SELECT * FROM ${this.table}`);
+    // Join with the "user" table to get the player's username
+    const [result] = await this.database.query(`
+    SELECT grid.*, user.pseudo AS user_pseudo 
+    FROM ${this.table} 
+    JOIN user ON grid.user_id = user.id
+  `);
 
     // Return the array of grids
     return result;
@@ -54,7 +59,22 @@ class GridManager extends AbstractManager {
     // Return the rows of the result, which represents the grids
     return rows;
   }
+  // The U of CRUD - Update operation
+  async update(id, newValues) {
+    // Create the SQL UPDATE query
+    const query = `UPDATE ${this.table} SET ? WHERE id = ?`;
 
+    // Execute the SQL UPDATE query to update a specific grid by its ID
+    const [result] = await this.database.query(query, [newValues, id]);
+
+    // If no rows were affected, return null
+    // Otherwise, return the ID of the updated grid
+    if (result.affectedRows === 0) {
+      return null;
+    } else {
+      return id;
+    }
+  }
   // The D of CRUD - Delete operation
   async delete(id) {
     // Execute the SQL DELETE query to delete a specific grid by its ID
