@@ -4,9 +4,14 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin: 0 auto;
   padding: 0 25px;
   width: 70%;
   gap: 10px;
+  @media screen and (max-width: 800px) {
+    width: 90%;
+    padding: 0;
+  }
   h1 {
     align-self: flex-start;
   }
@@ -17,12 +22,19 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
+    @media screen and (max-width: 800px) {
+      width: 100%;
+    }
   }
   .group {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    @media screen and (max-width: 800px) {
+      flex-direction: column;
+      gap: 10px;
+    }
     .btn {
       font-size: 0.7rem;
     }

@@ -27,6 +27,9 @@
     gap: 20px;
     box-shadow: 9px 12px 41px -5px $primary-color;
     border: 1px solid $primary-color;
+    @media screen and (max-width: 800px) {
+      width: 90%;
+    }
     h1 {
       text-align: center;
     }

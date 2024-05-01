@@ -16,6 +16,7 @@ export default function Delete({
   openModal,
   setOpenModal,
   additionalState,
+  confirmationMessage,
 }) {
   const confirmDelete = async () => {
     await handleDelete();

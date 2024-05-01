@@ -17,6 +17,8 @@ import "../styles/grids.scss";
 
 import bombBonusImg from "../assets/bomb.webp";
 import penBonusImg from "../assets/big-pen.webp";
+import infoW from "../assets/info-white.svg";
+import infoB from "../assets/info-black.svg";
 import PixelInfo from "../components/PixelInfo";
 import { success } from "../services/toast";
 import { UWebSocket } from "../utils/Uwebsocket";
@@ -32,34 +34,14 @@ export default function Grid() {
     createdAt: null,
   });
   const [showPixelInfos, setShowPixelInfos] = useState(false);
+  /* infos bonus */
+  const [isHovered, setIsHovered] = useState(false);
+
   /* web socket */
   const [message, setMessage] = useState("");
   const hasConnectedRef = useRef(false);
   const socketRef = useRef();
 
-  useEffect(() => {
-    socketRef.current = io.connect("http://localhost:4000");
-
-    socketRef.current.on("add-pixel", (newPixel) => {
-      // Mettez à jour votre état ici avec les nouvelles données de pixel
-      setGrid((prevGrid) => {
-        // Créez une copie de la grille précédente
-        const newGrid = [...prevGrid];
-
-        // Ajoutez newPixel et secondNewPixel à la nouvelle grille
-        newGrid.push(newPixel);
-        if (secondPixelResponse) {
-          newGrid.push(secondNewPixel);
-        }
-        return newGrid;
-      });
-    });
-
-    return () => {
-      socketRef.current.off("add-pixel");
-      socketRef.current.disconnect();
-    };
-  }, []);
   /*  const sendMessage = () => {
     socketRef.current.emit("client-message", { message: messageRef.current });
   }; */
@@ -177,7 +159,6 @@ export default function Grid() {
         const elapsedTime = new Date() - startTime;
         setElapsedTime(elapsedTime);
         if (elapsedTime >= 10800000) {
-          // 10800000 ms = 3 hours
           setStop(true);
         }
       }, 1000);
@@ -194,7 +175,7 @@ export default function Grid() {
         setPenBonusUses((prevPenBonusUses) => [...prevPenBonusUses, 5]);
         return newPenBonus;
       });
-    }, 900000); // 900000 ms = 15 min
+    }, 600000); // 60000 ms = 1 min
 
     return () => clearInterval(interval);
   }, []);
@@ -211,7 +192,10 @@ export default function Grid() {
   }
 
   /* CANVA */
-  const pixelSize = 11; // Taille de chaque "pixel" du damier
+  let pixelSize = 11; // Taille de chaque "pixel" du damier
+  if (window.innerWidth <= 430) {
+    pixelSize = 8;
+  }
   const nbPixels = 40;
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -219,8 +203,8 @@ export default function Grid() {
       const ctx = canvas.getContext("2d");
 
       // Dessiner un damier
-      const numX = nbPixels; // Nombre de "pixels" en largeur
-      const numY = nbPixels; // Nombre de "pixels" en hauteur
+      const numX = nbPixels;
+      const numY = nbPixels;
 
       for (let i = 0; i < numX; i++) {
         for (let j = 0; j < numY; j++) {
@@ -242,8 +226,15 @@ export default function Grid() {
         });
       }
     }
-  }, [grid]);
 
+    const handleAddPixel = (newPixel) => {
+      setGrid((prevGrid) => [...prevGrid, newPixel]);
+    };
+
+    UWebSocket.sendMessage("add-pixel", handleAddPixel);
+
+    // Nettoyer l'abonnement lorsque le composant est démonté
+  }, [grid]);
   /* GESTION DES GRILLES */
   const handleName = (event) => {
     setGridName(event.target.value);
@@ -538,12 +529,9 @@ export default function Grid() {
   };
 
   return (
-    <div className="page area-page">
+    <div className="page" id="area-page">
       <section className="grid-container">
         <div className="header">
-          <div className="chrono-container">
-            <p>{formatTime(elapsedTime)}</p>
-          </div>
           {storedUser.id === (gridData && gridData.user_id) ? (
             <form onSubmit={handleSubmit}>
               <h1>
@@ -569,6 +557,9 @@ export default function Grid() {
         )}
         <div className="grid-area-container">
           <div className="game-wrapper">
+            <div className="chrono-container">
+              <p>{formatTime(elapsedTime)}</p>
+            </div>
             <p className="message">{message}</p>
             <div className="canva-container">
               <Canvas
@@ -587,6 +578,29 @@ export default function Grid() {
               )}
             </div>
             <div className="bonus">
+              <div
+                className="bonus-infos"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                <img
+                  src={storedUser.theme === 1 ? infoW : infoB}
+                  alt="infos"
+                  width={30}
+                />
+                {isHovered && (
+                  <div className="hovered">
+                    <ul>
+                      <li>Gagne 1 bombe tous les 20 pixels placés</li>
+                      <li>Gagne 1 pinceau double toutes les 10 minutes</li>
+                    </ul>
+                    <p>
+                      ⚠️ Si tu quittes cette page tu perdras tes bonus en cours
+                      ⚠️
+                    </p>
+                  </div>
+                )}
+              </div>
               <div className="bombs-container">
                 {bombBonus.map((bonus, index) => (
                   <Button

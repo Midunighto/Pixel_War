@@ -295,6 +295,9 @@ export default function Account() {
           openModal={openModal}
           setOpenModal={setOpenModal}
           handleDelete={handleDelete}
+          confirmationMessage={
+            "Êtes-vous sûr de vouloir supprimer votre compte ?"
+          }
         />
       )}
     </div>

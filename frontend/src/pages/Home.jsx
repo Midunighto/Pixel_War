@@ -118,8 +118,8 @@ export default function Home() {
             <div className="rules bonus2">
               <h2>Bonus création</h2>
               <p>
-                Gagne un pinceau, qui double tes pixels, utilisable 5 fois
-                toutes les 15 minutes !
+                Gagne un pinceau utilisable 5 fois, qui double tes pixels, 1
+                fois toutes les 10 minutes !
               </p>
             </div>
           </section>

@@ -8,6 +8,11 @@
   margin: 0 auto;
   justify-content: center;
   gap: 20px;
+  @media screen and (max-width: 800px) {
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+  }
 
   .wrapper {
     width: 80%;
@@ -17,9 +22,15 @@
     flex-direction: column;
     gap: 50px;
     padding-left: 25px;
+    @media screen and (max-width: 800px) {
+      padding: 0;
+    }
   }
   img {
     padding-right: 25px;
+    @media screen and (max-width: 800px) {
+      padding: 0;
+    }
   }
 }
 
@@ -41,10 +52,17 @@ form {
   align-items: center;
   color: $font-color-white;
   gap: 40px;
+  @media screen and (max-width: 800px) {
+    gap: 20px;
+  }
   .group-form {
     display: flex;
     gap: 20px;
     /*       min-width: 400px;  */
+    @media screen and (max-width: 800px) {
+      flex-direction: column;
+      gap: 10px;
+    }
   }
   .input-group {
     display: flex;

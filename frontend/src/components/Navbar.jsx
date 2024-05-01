@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useStoredUser } from "../contexts/UserContext";
 import { useModal } from "../contexts/ModalContext";
+import { Spin as Hamburger } from "hamburger-react";
 
 import "../styles/nav.scss";
 
@@ -20,6 +21,7 @@ export default function Navbar() {
   const [navScrollClass, setNavScrollClass] = useState("");
   const [navHeight, setNavHeight] = useState("70px");
   const [navBg, setNavBg] = useState("#38304866");
+  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const isGridPage = /\/grid\/.*/.test(location.pathname);
 
@@ -44,6 +46,19 @@ export default function Navbar() {
     };
   }, []);
 
+  /* mobile */
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    // Nettoyer l'écouteur d'événements lorsque le composant est démonté
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <div
@@ -56,8 +71,8 @@ export default function Navbar() {
             transition: "all 1s",
           }}
         >
-          <ul className="nav-left">
-            <li>
+          {windowWidth < 768 ? (
+            <>
               <Link to="/">
                 <img
                   src={storedUser.theme === 2 ? logotxtblack : logotxt}
@@ -65,31 +80,79 @@ export default function Navbar() {
                   width={150}
                 />
               </Link>
-            </li>
-            <li id="nav-grids">
-              <Link to="/community-grids">Grilles de la communauté</Link>
-            </li>
-            <li>
-              <Link to="/my-grids">{storedUser ? "Mes grilles" : null}</Link>
-            </li>
-          </ul>
-          <div className="nav-right">
-            <Button
-              className="signin-btn"
-              type="button"
-              onClick={storedUser ? () => navigate("/account") : toggleModal}
-            >
-              {storedUser ? (
-                <img
-                  src={storedUser.theme === 2 ? accountblack : account}
-                  alt="account logo"
-                  width={20}
-                />
-              ) : (
-                "Se connecter"
+              <Hamburger
+                rounded
+                toggled={isOpen}
+                toggle={setIsOpen}
+                className="menu"
+                style={{ zIndex: 1000 }}
+              />
+              {isOpen && (
+                <ul className="burger">
+                  <li id="nav-grids">
+                    <Link to="/community-grids">Grilles de la communauté</Link>
+                  </li>
+                  <li>
+                    <Link to="/my-grids">
+                      {storedUser ? "Mes grilles" : null}
+                    </Link>
+                  </li>
+                  <li>
+                    <Button
+                      className="signin-btn"
+                      type="button"
+                      onClick={
+                        storedUser ? () => navigate("/account") : toggleModal
+                      }
+                    >
+                      {storedUser ? "Mon compte" : "Se connecter"}
+                    </Button>
+                  </li>
+                </ul>
               )}
-            </Button>
-          </div>
+            </>
+          ) : (
+            <>
+              <ul className="nav-left">
+                <li>
+                  <Link to="/">
+                    <img
+                      src={storedUser.theme === 2 ? logotxtblack : logotxt}
+                      alt="Home"
+                      width={150}
+                    />
+                  </Link>
+                </li>
+                <li id="nav-grids">
+                  <Link to="/community-grids">Grilles de la communauté</Link>
+                </li>
+                <li>
+                  <Link to="/my-grids">
+                    {storedUser ? "Mes grilles" : null}
+                  </Link>
+                </li>
+              </ul>
+              <div className="nav-right">
+                <Button
+                  className="signin-btn"
+                  type="button"
+                  onClick={
+                    storedUser ? () => navigate("/account") : toggleModal
+                  }
+                >
+                  {storedUser ? (
+                    <img
+                      src={storedUser.theme === 2 ? accountblack : account}
+                      alt="account logo"
+                      width={20}
+                    />
+                  ) : (
+                    "Se connecter"
+                  )}
+                </Button>
+              </div>
+            </>
+          )}
         </nav>
       </div>
       {openModal && <SignIn />}
