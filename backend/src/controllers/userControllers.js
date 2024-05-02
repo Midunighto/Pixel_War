@@ -140,7 +140,10 @@ const refreshToken = async (req, res) => {
     });
     res.cookie("token", userToken, {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
     res.json(result);
   } catch (err) {
