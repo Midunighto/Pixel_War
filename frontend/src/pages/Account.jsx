@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
@@ -128,10 +129,10 @@ export default function Account() {
       await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
         withCredentials: true,
       });
-
+      Cookies.remove("user");
       window.location.href = "/";
     } catch (err) {
-      console.error("Error during logout:", error);
+      console.error("Error during logout:", err);
     }
   };
 
