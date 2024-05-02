@@ -1,5 +1,5 @@
--- SQLBook: Code/* 
- CREATE DATABASE IF NOT EXISTS pixel_war; */
+/* -- SQLBook: Code
+ CREATE DATABASE IF NOT EXISTS pixel_war; 
 
 USE pixel_war; 
 
@@ -68,4 +68,4 @@ ALTER TABLE "user"
 ADD COLUMN "isAdmin" TINYINT(1) NOT NULL DEFAULT 0; 
 
 ALTER TABLE `grid`
-MODIFY `name` varchar(255) NOT NULL;
+MODIFY `name` varchar(255) NOT NULL; */
