@@ -21,7 +21,7 @@ import infoW from "../assets/info-white.svg";
 import infoB from "../assets/info-black.svg";
 import PixelInfo from "../components/PixelInfo";
 import { success } from "../services/toast";
-import { UWebSocket } from "../utils/Uwebsocket";
+/* import { UWebSocket } from "../utils/Uwebsocket"; */
 
 export default function Grid() {
   const { storedUser } = useStoredUser();
@@ -332,7 +332,7 @@ export default function Grid() {
       if (socketRef.current) {
         socketRef.current.emit("add-pixel", newPixel);
       }
-      UWebSocket.sendMessage("add-pixel", newPixel);
+      /*       UWebSocket.sendMessage("add-pixel", newPixel); */
 
       let secondPixelResponse;
       let activePenBonusIndex = activePenBonus.findIndex(
@@ -359,7 +359,7 @@ export default function Grid() {
         if (socketRef.current) {
           socketRef.current.emit("add-pixel", secondNewPixel);
         }
-        UWebSocket.sendMessage("add-pixel", secondNewPixel);
+        /*  UWebSocket.sendMessage("add-pixel", secondNewPixel); */
 
         setPenBonusUses((prevUses) => {
           const newUses = [...prevUses];
@@ -444,7 +444,7 @@ export default function Grid() {
         if (socketRef.current) {
           socketRef.current.emit("remove-pixel", selectedPixel.id);
         }
-        UWebSocket.sendMessage("remove-pixel", selectedPixel.id);
+        /*    UWebSocket.sendMessage("remove-pixel", selectedPixel.id); */
         const pixelResponse = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/grids/${id}/pixels`
         );

@@ -1,4 +1,5 @@
 // Import access to database tables
+const { path } = require("../app");
 const tables = require("../tables");
 const jwt = require("jsonwebtoken");
 
@@ -110,22 +111,19 @@ const destroy = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { user } = req;
-    // Assurez-vous que la fonction updateLastLog existe dans votre gestionnaire utilisateur (tables.user)
+
     await tables.user.updateLastLog(user.id);
 
-    // Générez un token JWT pour l'utilisateur
     const userToken = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
-    // Configurez le cookie pour stocker le token JWT
     res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
 
-    // Répondez avec les informations de l'utilisateur et le token JWT
     res.json({ user, userToken });
   } catch (err) {
-    // Gérez les erreurs
     next(err);
   }
 };
@@ -144,6 +142,7 @@ const refreshToken = async (req, res) => {
     res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
     res.json(result);
   } catch (err) {
@@ -156,6 +155,7 @@ const logout = async (req, res, next) => {
     res.clearCookie("userToken", {
       httpOnly: true,
       maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
     });
     res.sendStatus(200);
   } catch (err) {

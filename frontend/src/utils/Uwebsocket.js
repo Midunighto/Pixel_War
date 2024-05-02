@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+/* import { io, Socket } from "socket.io-client";
 
 export class UWebSocket {
   static socket = null;
@@ -24,9 +24,10 @@ export class UWebSocket {
   /**
    * ceci est privé
    */
-  static _createSocket() {
+/*   static _createSocket() {
     this.socket = io(`${import.meta.env.VITE_SOCKET_BACKEND_URL}`, {
       extraHeaders: {},
     });
   }
-}
+} */
+ */
