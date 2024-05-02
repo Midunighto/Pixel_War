@@ -15,3 +15,5 @@ app
   .on("error", (err) => {
     console.error("Error:", err.message);
   });
+
+app.set("trust proxy", 1);
