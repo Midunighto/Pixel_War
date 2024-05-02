@@ -130,6 +130,7 @@ export default function Account() {
         withCredentials: true,
       });
       Cookies.remove("user");
+      setStoredUser(null);
       window.location.href = "/";
     } catch (err) {
       console.error("Error during logout:", err);

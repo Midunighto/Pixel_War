@@ -8,12 +8,15 @@ import { useModal } from "../contexts/ModalContext";
 
 import { error, success } from "../services/toast";
 import Button from "./Button";
+import Loader from "./Loader";
 
 import close from "../assets/close.svg";
 
 export default function SignIn() {
   const { storedUser, setStoredUser } = useStoredUser();
   const { openModal, toggleModal } = useModal();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [user, setUser] = useState({
     pseudo: "",
@@ -34,7 +37,7 @@ export default function SignIn() {
       error("Merci de remplir tous les champs");
       return;
     }
-
+    setIsLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/login`,
@@ -63,13 +66,17 @@ export default function SignIn() {
       } else {
         error("Une erreur s'est produite");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (storedUser) {
     return <Navigate to="/" />;
   }
-
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div className="page" style={{ padding: 0 }}>
       {openModal && (

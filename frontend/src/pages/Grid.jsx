@@ -229,8 +229,8 @@ export default function Grid() {
     const handleAddPixel = (newPixel) => {
       setGrid((prevGrid) => [...prevGrid, newPixel]);
     };
-
-    UWebSocket.sendMessage("add-pixel", handleAddPixel);
+    /* 
+    UWebSocket.sendMessage("add-pixel", handleAddPixel); */
 
     // Nettoyer l'abonnement lorsque le composant est démonté
   }, [grid]);

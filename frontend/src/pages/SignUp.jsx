@@ -18,6 +18,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const { openModal, toggleModal } = useModal();
   const { storedUser } = useStoredUser();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [user, setUser] = useState({
     pseudo: "",
@@ -59,6 +60,7 @@ export default function SignUp() {
       error("Merci d'accepter les conditions d'utilisation");
       return;
     }
+    setIsLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users`,
@@ -83,6 +85,8 @@ export default function SignUp() {
       } else {
         console.error(err);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -5,10 +5,11 @@ import "jquery.ripples";
 import Cookies from "js-cookie";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useStoredUser } from "./contexts/UserContext";
 import Navbar from "./components/Navbar";
+import Loader from "./components/Loader";
 import Footer from "./components/Footer";
 
 import "./styles/root.scss";
@@ -16,26 +17,39 @@ import "./styles/root.scss";
 function App() {
   const { storedUser, setStoredUser } = useStoredUser();
 
-  useEffect(() => {
-    if (storedUser === false) {
-      return;
-    }
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/protected`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        const { id, pseudo, theme, email, isAdmin } = res.data;
-        const userData = { id, pseudo, theme, email, isAdmin };
+  const [isLoading, setIsLoading] = useState(true);
 
-        setStoredUser(userData);
-        Cookies.set("user", JSON.stringify(userData), { expires: 1 });
-      })
-      .catch((err) => {
-        setStoredUser(false);
-        Cookies.remove("user");
-        console.error(err);
-      });
+  useEffect(() => {
+    const fetchUser = async () => {
+      const cookieUser = Cookies.get("user");
+      if (cookieUser) {
+        setStoredUser(JSON.parse(cookieUser));
+        setIsLoading(false);
+      } else if (storedUser !== false) {
+        try {
+          const res = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/api/protected`,
+            {
+              withCredentials: true,
+            }
+          );
+
+          const { id, pseudo, theme, email, isAdmin } = res.data;
+          const userData = { id, pseudo, theme, email, isAdmin };
+
+          setStoredUser(userData);
+          Cookies.set("user", JSON.stringify(userData), { expires: 1 });
+        } catch (err) {
+          setStoredUser(false);
+          Cookies.remove("user");
+          console.error(err);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUser();
   }, []);
 
   useEffect(() => {
@@ -74,6 +88,10 @@ function App() {
       ? document.body.classList.add("light")
       : document.body.classList.remove("light");
   }, [storedUser.theme]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
