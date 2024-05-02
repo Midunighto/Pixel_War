@@ -1,4 +1,8 @@
--- SQLBook: Code
+/* -- SQLBook: Code
+CREATE DATABASE IF NOT EXISTS pixel_war;
+
+USE pixel_war;
+
 CREATE TABLE "user" (
   "id" int PRIMARY KEY AUTO_INCREMENT NOT NULL,
   "pseudo" varchar(50) NOT NULL,
@@ -61,4 +65,4 @@ ADD COLUMN "user_pseudo" varchar(50) NOT NULL;
 ALTER TABLE "pixel"
 ADD CONSTRAINT "pixel_ibfk_3" FOREIGN KEY ("user_pseudo") REFERENCES "user"("pseudo") ON DELETE CASCADE;
 ALTER TABLE "user"
-ADD COLUMN "isAdmin" TINYINT(1) NOT NULL DEFAULT 0;
+ADD COLUMN "isAdmin" TINYINT(1) NOT NULL DEFAULT 0; */
