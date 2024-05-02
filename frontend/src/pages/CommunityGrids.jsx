@@ -127,13 +127,15 @@ export default function CommunityGrids() {
               communauté Pixel Wars !
             </p>
             <div className="row">
-              <Button
-                type="button"
-                className="blob-btn-dark"
-                onClick={handleCreateGrid}
-              >
-                Créer une grille
-              </Button>
+              {storedUser && (
+                <Button
+                  type="button"
+                  className="blob-btn-dark"
+                  onClick={handleCreateGrid}
+                >
+                  Créer une grille
+                </Button>
+              )}
 
               <Searchbar
                 searchValue={searchValue}
