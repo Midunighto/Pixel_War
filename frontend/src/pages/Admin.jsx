@@ -68,8 +68,8 @@ export default function Admin() {
         }
       );
       success("Utilisateur supprimé avec succès");
-      // Mettre à jour le render
       setUsers(users.filter((user) => user.id !== id));
+      setOpenModal(false);
     } catch (err) {
       console.error(
         "Error during delete:",
@@ -89,6 +89,7 @@ export default function Admin() {
       );
       success("Grille supprimée avec succès");
       setGrids(grids.filter((grid) => grid.id !== id));
+      setOpenModal(false);
     } catch (err) {
       console.error(
         "Error during delete:",

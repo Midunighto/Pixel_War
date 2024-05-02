@@ -12,7 +12,7 @@ import darklogo from "../assets/logo-black.webp";
 import "../styles/home.scss";
 import axios from "axios";
 
-export default function Home() {
+export default function Home({ theme, defaultTheme }) {
   const { storedUser } = useStoredUser();
   const { openModal, toggleModal } = useModal();
 
@@ -54,7 +54,7 @@ export default function Home() {
               </p>
             </div>
             <img
-              src={storedUser.theme === 2 ? darklogo : whitelogo}
+              src={theme ? darklogo : whitelogo}
               alt="logo"
               width={276}
               height={201}

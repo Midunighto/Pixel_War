@@ -18,6 +18,8 @@ function App() {
   const { storedUser, setStoredUser } = useStoredUser();
 
   const [isLoading, setIsLoading] = useState(true);
+  const defaultTheme = 1;
+  const theme = storedUser ? storedUser.theme : defaultTheme;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -55,10 +57,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    storedUser.theme === 2
-      ? document.body.classList.add("dark")
-      : document.body.classList.remove("dark");
-  }, [storedUser.theme]);
+    theme === 2
+      ? document.body.classList.add("light")
+      : document.body.classList.remove("light");
+  }, [theme]);
 
   useEffect(() => {
     $("body").ripples({
@@ -85,20 +87,14 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    storedUser.theme === 2
-      ? document.body.classList.add("light")
-      : document.body.classList.remove("light");
-  }, [storedUser.theme]);
-
   if (isLoading) {
     return <Loader />;
   }
 
   return (
     <>
-      <Navbar key={storedUser.theme} />
-      <Outlet />
+      <Navbar key={theme} theme={theme} defaultTheme={defaultTheme} />
+      <Outlet theme={theme} defaultTheme={defaultTheme} />
       <Footer />
     </>
   );

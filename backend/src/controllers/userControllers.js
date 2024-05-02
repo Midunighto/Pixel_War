@@ -137,11 +137,13 @@ const refreshToken = async (req, res) => {
     }
     delete result.password;
     const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
-      expiresIn: "10d",
+      expiresIn: "3h",
     });
     res.cookie("userToken", userToken, {
       httpOnly: true,
-      maxAge: 10 * 24 * 60 * 60 * 1000,
+      maxAge: 3 * 60 * 60 * 1000,
+      sameSite: "none",
+      Secure: true,
       path: "/",
     });
     res.json(result);
@@ -154,7 +156,9 @@ const logout = async (req, res, next) => {
   try {
     res.clearCookie("userToken", {
       httpOnly: true,
-      maxAge: 10 * 24 * 60 * 60 * 1000,
+      maxAge: 3 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
       path: "/",
     });
     res.sendStatus(200);

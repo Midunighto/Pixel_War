@@ -13,7 +13,7 @@ import account from "../assets/profile.png";
 import accountblack from "../assets/profile-black.svg";
 import SignIn from "./SignIn";
 
-export default function Navbar() {
+export default function Navbar({ theme, defaultTheme }) {
   const navigate = useNavigate();
   const { storedUser } = useStoredUser();
   const { openModal, toggleModal } = useModal();
@@ -75,7 +75,7 @@ export default function Navbar() {
             <>
               <Link to="/">
                 <img
-                  src={storedUser.theme === 2 ? logotxtblack : logotxt}
+                  src={theme === 2 ? logotxtblack : logotxt}
                   alt="Home"
                   width={150}
                 />
@@ -117,7 +117,7 @@ export default function Navbar() {
                 <li>
                   <Link to="/">
                     <img
-                      src={storedUser.theme === 2 ? logotxtblack : logotxt}
+                      src={theme === 2 ? logotxtblack : logotxt}
                       alt="Home"
                       width={150}
                     />
@@ -142,7 +142,7 @@ export default function Navbar() {
                 >
                   {storedUser ? (
                     <img
-                      src={storedUser.theme === 2 ? accountblack : account}
+                      src={theme === 2 ? accountblack : account}
                       alt="account logo"
                       width={20}
                     />

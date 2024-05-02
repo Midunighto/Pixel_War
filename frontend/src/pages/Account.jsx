@@ -129,9 +129,10 @@ export default function Account() {
       await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
         withCredentials: true,
       });
+
       Cookies.remove("user");
       setStoredUser(null);
-      window.location.href = "/";
+      navigate("/");
     } catch (err) {
       console.error("Error during logout:", err);
     }
