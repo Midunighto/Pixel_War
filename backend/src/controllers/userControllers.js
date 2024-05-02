@@ -117,7 +117,13 @@ const login = async (req, res, next) => {
     const userToken = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
     // Configurez le cookie pour stocker le token JWT
-    res.cookie("userToken", userToken, { httpOnly: true });
+    res.cookie("userToken", userToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
 
     // Répondez avec les informations de l'utilisateur et le token JWT
     res.json({ user, userToken });
@@ -138,7 +144,7 @@ const refreshToken = async (req, res) => {
     const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
       expiresIn: "10d",
     });
-    res.cookie("token", userToken, {
+    res.cookie("userToken", userToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
