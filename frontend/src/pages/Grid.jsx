@@ -150,12 +150,15 @@ export default function Grid() {
   }, [id]);
   /* CHRONO */
   useEffect(() => {
-    if (startTime && !stop) {
+    if (!startTime) {
+      setStartTime(new Date().getTime());
+    } else if (!stop) {
       const interval = setInterval(() => {
         const elapsedTime = new Date() - startTime;
         setElapsedTime(elapsedTime);
         if (elapsedTime >= 10800000) {
           setStop(true);
+          setElatsedTime(startTime + 10800000);
         }
       }, 1000);
 
@@ -576,7 +579,7 @@ export default function Grid() {
                 onMouseLeave={() => setIsHovered(false)}
               >
                 <img
-                  src={storedUser.theme === 1 ? infoW : infoB}
+                  src={storedUser.theme === 2 ? infoB : infoW}
                   alt="infos"
                   width={30}
                 />

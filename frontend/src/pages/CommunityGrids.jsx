@@ -19,9 +19,16 @@ export default function CommunityGrids() {
   const [loading, setLoading] = useState(true);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [search, setSearch] = useState(false);
 
-  const canvasRefs = grids.map(() => React.createRef());
-
+  /* TRI DES GRILLES */
+  const sortedGrids = [...grids].sort(
+    (a, b) => new Date(b.creation_time) - new Date(a.creation_time)
+  );
+  const canvasRefs = sortedGrids.reduce((refs, grid) => {
+    refs[grid.id] = React.createRef();
+    return refs;
+  }, {});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,8 +74,8 @@ export default function CommunityGrids() {
   const pixelSize = 5; // Taille de chaque pixel du canva
   const nbPixels = 40;
   useEffect(() => {
-    grids.forEach((grid, index) => {
-      const canvas = canvasRefs[index].current;
+    sortedGrids.forEach((grid) => {
+      const canvas = canvasRefs[grid.id].current;
       if (canvas) {
         const ctx = canvas.getContext("2d");
 
@@ -112,7 +119,7 @@ export default function CommunityGrids() {
     }
   };
 
-  const filteredGrids = grids.filter((element) =>
+  const filteredGrids = sortedGrids.filter((element) =>
     element.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -141,6 +148,7 @@ export default function CommunityGrids() {
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
                 placeholder="Rechercher une grille par nom"
+                onClick={() => setSearch(!search)}
               />
             </div>
           </div>
@@ -168,7 +176,7 @@ export default function CommunityGrids() {
                   <h2>{grid.name}</h2>
 
                   <Canvas
-                    canvasRef={canvasRefs[index]}
+                    canvasRef={canvasRefs[grid.id]}
                     nbPixels={nbPixels}
                     pixelSize={pixelSize}
                     handleCanvasClick={() => navigate(`/grid/${grid.id}`)}

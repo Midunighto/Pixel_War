@@ -119,10 +119,7 @@ const login = async (req, res, next) => {
     // Configurez le cookie pour stocker le token JWT
     res.cookie("userToken", userToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
       maxAge: 10 * 24 * 60 * 60 * 1000,
-      path: "/",
     });
 
     // Répondez avec les informations de l'utilisateur et le token JWT
@@ -146,10 +143,7 @@ const refreshToken = async (req, res) => {
     });
     res.cookie("userToken", userToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
       maxAge: 10 * 24 * 60 * 60 * 1000,
-      path: "/",
     });
     res.json(result);
   } catch (err) {
