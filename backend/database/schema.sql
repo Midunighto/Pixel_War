@@ -23,7 +23,7 @@ CREATE TABLE "grid" (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DELIMITER //
-CREATE TRIGGER set_default_name BEFORE INSERT ON grid
+CREATE TRIGGER set_default_name BEFORE INSERT ON "grid"
 FOR EACH ROW
 BEGIN
   IF NEW.name IS NULL OR NEW.name = '' THEN
