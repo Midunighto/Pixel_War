@@ -1,7 +1,7 @@
 /* -- SQLBook: Code/* 
 /* CREATE DATABASE IF NOT EXISTS pixel_war; */
 
-/* USE pixel_war; */
+/* USE pixel_war; 
 
 CREATE TABLE "user" (
   "id" int PRIMARY KEY AUTO_INCREMENT NOT NULL,
