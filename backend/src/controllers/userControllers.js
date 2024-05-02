@@ -153,7 +153,10 @@ const refreshToken = async (req, res) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie("userToken");
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
     res.sendStatus(200);
   } catch (err) {
     next(err);

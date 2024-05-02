@@ -106,10 +106,16 @@ export default function CommunityGrids() {
 
   const handleCreateGrid = async () => {
     try {
+      const today = new Date();
+      const dateString = `${today.getFullYear()}-${
+        today.getMonth() + 1
+      }-${today.getDate()}`;
+
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/grids`,
         {
           user_id: storedUser.id,
+          name: `Area-${dateString}`,
         }
       );
 
@@ -119,10 +125,11 @@ export default function CommunityGrids() {
     }
   };
 
-  const filteredGrids = sortedGrids.filter((element) =>
-    element.name.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredGrids = sortedGrids.filter(
+    (element) =>
+      element.name &&
+      element.name.toLowerCase().includes(searchValue.toLowerCase())
   );
-
   return (
     <div className="page">
       <section className="grids-container">
