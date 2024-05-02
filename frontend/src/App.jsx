@@ -17,6 +17,9 @@ function App() {
   const { storedUser, setStoredUser } = useStoredUser();
 
   useEffect(() => {
+    if (storedUser === false) {
+      return;
+    }
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/protected`, {
         withCredentials: true,

@@ -92,10 +92,16 @@ export default function MyGrids() {
 
   const handleCreateGrid = async () => {
     try {
+      const today = new Date();
+      const dateString = `${today.getFullYear()}0${
+        today.getMonth() + 1
+      }0${today.getDate()}${today.getHours()}${today.getMinutes()}${today.getSeconds()}`;
+
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/grids`,
         {
           user_id: storedUser.id,
+          name: `Area${dateString}`,
         }
       );
 
