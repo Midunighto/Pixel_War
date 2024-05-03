@@ -3,6 +3,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import Canvas from "../components/Canvas";
+import Home from "./Home";
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
 
@@ -200,7 +201,7 @@ export default function MyGrids() {
           </section>
         </div>
       ) : (
-        <Homes />
+        <Home />
       )}
     </>
   );

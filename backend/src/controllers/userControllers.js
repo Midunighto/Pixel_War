@@ -135,18 +135,22 @@ const refreshToken = async (req, res) => {
   try {
     const result = await tables.user.read(id);
     if (!result) {
-      res.status(404).send("No user found");
+      return res.status(401).send("Unauthorized");
     }
+
     delete result.password;
+
     const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
       expiresIn: "3h",
     });
+
     res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
       secure: true,
     });
+
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
