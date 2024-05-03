@@ -11,10 +11,8 @@ const checkToken = async (req, res, next) => {
       req.decoded = { id: decoded.id };
       return next();
     }
-    res.clearCookie("userToken");
     return res.status(403).json({ error: "Token invalide" });
   } catch (error) {
-    res.clearCookie("userToken");
     return res.status(403).json({ error: "Token invalide" });
   }
 };
