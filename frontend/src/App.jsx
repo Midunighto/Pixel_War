@@ -2,6 +2,7 @@
 import $ from "jquery";
 import "jquery.ripples";
 
+import Cookies from "js-cookie";
 import { Outlet } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -22,7 +23,11 @@ function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (storedUser !== false) {
+      const cookieUser = Cookies.get("userToken");
+      if (cookieUser) {
+        setStoredUser(JSON.parse(cookieUser));
+        setIsLoading(false);
+      } else if (storedUser !== false) {
         try {
           const res = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/protected`,
@@ -35,8 +40,10 @@ function App() {
           const userData = { id, pseudo, theme, email, isAdmin };
 
           setStoredUser(userData);
+          Cookies.set("userToken", JSON.stringify(userData), { expires: 1 });
         } catch (err) {
           setStoredUser(false);
+          Cookies.remove("userToken");
           console.error(err);
         } finally {
           setIsLoading(false);

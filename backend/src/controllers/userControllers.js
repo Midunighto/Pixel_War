@@ -116,8 +116,11 @@ const login = async (req, res, next) => {
 
     const userToken = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
-    // Set the token in the response header instead of a cookie
-    res.setHeader("Authorization", "Bearer " + userToken);
+    res.cookie("userToken", userToken, {
+      httpOnly: true,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
 
     res.json({ user, userToken });
   } catch (err) {
@@ -136,9 +139,12 @@ const refreshToken = async (req, res) => {
     const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
       expiresIn: "3h",
     });
-
-    res.setHeader("Authorization", "Bearer " + userToken);
-
+    res.cookie("userToken", userToken, {
+      httpOnly: true,
+      maxAge: 3 * 60 * 60 * 1000,
+      sameSite: "none",
+      Secure: true,
+    });
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -147,6 +153,12 @@ const refreshToken = async (req, res) => {
 
 const logout = async (req, res, next) => {
   try {
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      maxAge: 3 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
+    });
     res.sendStatus(200);
   } catch (err) {
     next(err);
