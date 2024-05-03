@@ -112,88 +112,96 @@ export default function MyGrids() {
   };
 
   return (
-    <div className="page">
-      <section className="my-grids">
-        <div className="header">
-          <h1>Mes Grilles</h1>
-          <p>Retrouve ici toutes les griles que tu as créées !</p>
-        </div>
-        <Button
-          type="button"
-          className="blob-btn-dark"
-          onClick={handleCreateGrid}
-        >
-          Créer une grille
-        </Button>
-        {loading ? (
-          <Loader />
-        ) : (
-          <div className="grids-wrapper">
-            {grids
-              .sort(
-                (a, b) => new Date(b.creation_time) - new Date(a.creation_time)
-              )
-              .map((grid, index) => (
-                <div
-                  key={grid.id}
-                  className="grid-card"
-                  onClick={() => navigate(`/grid/${grid.id}`)}
-                >
-                  <h2>{grid.name}</h2>
-
-                  <Canvas
-                    canvasRef={canvasRefs[index]}
-                    nbPixels={nbPixels}
-                    pixelSize={pixelSize}
-                    handleCanvasClick={() => navigate(`/grid/${grid.id}`)}
-                  />
-                  <div className="grid-foil">
-                    {(Date.now() - new Date(grid.creation_time).getTime()) /
-                      3600000 >
-                    3 ? (
-                      <p>Fermée</p>
-                    ) : (
-                      <p>
-                        {`Temps restant: ${Math.floor(
-                          Math.max(
-                            0,
-                            3 -
-                              (Date.now() -
-                                new Date(grid.creation_time).getTime()) /
-                                3600000
-                          )
-                        )}h${Math.round(
-                          (Math.max(
-                            0,
-                            3 -
-                              (Date.now() -
-                                new Date(grid.creation_time).getTime()) /
-                                3600000
-                          ) %
-                            1) *
-                            60
-                        )}`}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid-card-footer">
-                    <Button
-                      type="button"
-                      className="blob-btn-light"
+    <>
+      {storedUser ? (
+        <div className="page">
+          <section className="my-grids">
+            <div className="header">
+              <h1>Mes Grilles</h1>
+              <p>Retrouve ici toutes les griles que tu as créées !</p>
+            </div>
+            <Button
+              type="button"
+              className="blob-btn-dark"
+              onClick={handleCreateGrid}
+            >
+              Créer une grille
+            </Button>
+            {loading ? (
+              <Loader />
+            ) : (
+              <div className="grids-wrapper">
+                {grids
+                  .sort(
+                    (a, b) =>
+                      new Date(b.creation_time) - new Date(a.creation_time)
+                  )
+                  .map((grid, index) => (
+                    <div
+                      key={grid.id}
+                      className="grid-card"
                       onClick={() => navigate(`/grid/${grid.id}`)}
                     >
-                      {(Date.now() - new Date(grid.creation_time).getTime()) /
-                        3600000 >
-                      3
-                        ? "Voir"
-                        : "Rejoindre"}
-                    </Button>
-                  </div>
-                </div>
-              ))}
-          </div>
-        )}
-      </section>
-    </div>
+                      <h2>{grid.name}</h2>
+
+                      <Canvas
+                        canvasRef={canvasRefs[index]}
+                        nbPixels={nbPixels}
+                        pixelSize={pixelSize}
+                        handleCanvasClick={() => navigate(`/grid/${grid.id}`)}
+                      />
+                      <div className="grid-foil">
+                        {(Date.now() - new Date(grid.creation_time).getTime()) /
+                          3600000 >
+                        3 ? (
+                          <p>Fermée</p>
+                        ) : (
+                          <p>
+                            {`Temps restant: ${Math.floor(
+                              Math.max(
+                                0,
+                                3 -
+                                  (Date.now() -
+                                    new Date(grid.creation_time).getTime()) /
+                                    3600000
+                              )
+                            )}h${Math.round(
+                              (Math.max(
+                                0,
+                                3 -
+                                  (Date.now() -
+                                    new Date(grid.creation_time).getTime()) /
+                                    3600000
+                              ) %
+                                1) *
+                                60
+                            )}`}
+                          </p>
+                        )}
+                      </div>
+                      <div className="grid-card-footer">
+                        <Button
+                          type="button"
+                          className="blob-btn-light"
+                          onClick={() => navigate(`/grid/${grid.id}`)}
+                        >
+                          {(Date.now() -
+                            new Date(grid.creation_time).getTime()) /
+                            3600000 >
+                          3
+                            ? "Voir"
+                            : "Rejoindre"}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : (
+        <Homes />
+      )}
+    </>
   );
 }

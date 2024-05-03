@@ -181,131 +181,143 @@ export default function Account() {
   };
 
   return (
-    <div className="page">
-      <section className="account ">
-        <h1>Mon Compte</h1>
-        <div className="account-wrapper">
-          <img
-            src={storedUser.theme === 1 ? avatar : avatarblack}
-            alt="account logo"
-            width={100}
-          />
-          <p>{storedUser.pseudo}</p>
-          <div className="line" />
-          <div className="group">
-            <p>
-              <span>E-mail :</span>{" "}
-              {mail ? (
-                <form onSubmit={handleMailSubmit}>
-                  <input
-                    type="text"
-                    ref={mailRef}
-                    placeholder={storedUser.email}
-                  />
-                </form>
-              ) : (
-                <em>{storedUser.email}</em>
-              )}
-            </p>
-            {mail ? (
-              <Button
-                className="blob-btn-light"
-                type="submit"
-                onClick={handleMailSubmit}
-              >
-                Confirmer
-              </Button>
-            ) : (
-              <Button className="blob-btn-light" onClick={() => setMail(!mail)}>
-                Modifier mon adresse e-mail
-              </Button>
-            )}
-          </div>
-          <div className="line" />
-          <div className="group">
-            <p>
-              <span>Mot de passe : </span>
-              {pwd ? (
-                <form>
-                  <input type="text" ref={pwdRef} placeholder="********" />
-                </form>
-              ) : (
-                <em>********</em>
-              )}
-            </p>
-            {pwd ? (
-              <Button
-                className="blob-btn-light"
-                type="submit"
-                onClick={handlePwdSubmit}
-              >
-                Confirmer
-              </Button>
-            ) : (
-              <Button className="blob-btn-light" onClick={() => setPwd(!pwd)}>
-                Modifier mon mot de passe
-              </Button>
-            )}
-          </div>
-          <div className="line" />
-          <div className="group">
-            <p>Opter pour le thème {lightTheme ? "sombre" : "clair"}</p>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <MaterialUISwitch
-                    sx={{ m: 1 }}
-                    checked={storedUser.theme === 1}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleUserTheme();
-                    }}
-                  />
-                }
+    <>
+      {storedUser ? (
+        <div className="page">
+          <section className="account ">
+            <h1>Mon Compte</h1>
+            <div className="account-wrapper">
+              <img
+                src={storedUser.theme === 1 ? avatar : avatarblack}
+                alt="account logo"
+                width={100}
               />
-            </FormGroup>
-          </div>
-        </div>
+              <p>{storedUser.pseudo}</p>
+              <div className="line" />
+              <div className="group">
+                <p>
+                  <span>E-mail :</span>{" "}
+                  {mail ? (
+                    <form onSubmit={handleMailSubmit}>
+                      <input
+                        type="text"
+                        ref={mailRef}
+                        placeholder={storedUser.email}
+                      />
+                    </form>
+                  ) : (
+                    <em>{storedUser.email}</em>
+                  )}
+                </p>
+                {mail ? (
+                  <Button
+                    className="blob-btn-light"
+                    type="submit"
+                    onClick={handleMailSubmit}
+                  >
+                    Confirmer
+                  </Button>
+                ) : (
+                  <Button
+                    className="blob-btn-light"
+                    onClick={() => setMail(!mail)}
+                  >
+                    Modifier mon adresse e-mail
+                  </Button>
+                )}
+              </div>
+              <div className="line" />
+              <div className="group">
+                <p>
+                  <span>Mot de passe : </span>
+                  {pwd ? (
+                    <form>
+                      <input type="text" ref={pwdRef} placeholder="********" />
+                    </form>
+                  ) : (
+                    <em>********</em>
+                  )}
+                </p>
+                {pwd ? (
+                  <Button
+                    className="blob-btn-light"
+                    type="submit"
+                    onClick={handlePwdSubmit}
+                  >
+                    Confirmer
+                  </Button>
+                ) : (
+                  <Button
+                    className="blob-btn-light"
+                    onClick={() => setPwd(!pwd)}
+                  >
+                    Modifier mon mot de passe
+                  </Button>
+                )}
+              </div>
+              <div className="line" />
+              <div className="group">
+                <p>Opter pour le thème {lightTheme ? "sombre" : "clair"}</p>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <MaterialUISwitch
+                        sx={{ m: 1 }}
+                        checked={storedUser.theme === 1}
+                        onChange={(e) => {
+                          handleChange(e);
+                          handleUserTheme();
+                        }}
+                      />
+                    }
+                  />
+                </FormGroup>
+              </div>
+            </div>
 
-        {storedUser.isAdmin === 1 && (
-          <Button
-            type="button"
-            className="blob-btn-dark"
-            onClick={() => navigate("/29119510")}
-          >
-            Administrateur
-          </Button>
-        )}
-        <div className="account-footer">
-          <Button
-            type="button"
-            className="blob-btn-dark"
-            onClick={handleLogout}
-          >
-            Se déconnecter
-          </Button>
+            {storedUser.isAdmin === 1 && (
+              <Button
+                type="button"
+                className="blob-btn-dark"
+                onClick={() => navigate("/29119510")}
+              >
+                Administrateur
+              </Button>
+            )}
+            <div className="account-footer">
+              <Button
+                type="button"
+                className="blob-btn-dark"
+                onClick={handleLogout}
+              >
+                Se déconnecter
+              </Button>
 
-          <Button
-            type="button"
-            id="delete"
-            onClick={() => {
-              setOpenModal(true);
-            }}
-          >
-            supprimer mon compte
-          </Button>
+              <Button
+                type="button"
+                id="delete"
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              >
+                supprimer mon compte
+              </Button>
+            </div>
+          </section>
+          {openModal && (
+            <Delete
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              handleDelete={handleDelete}
+              confirmationMessage={
+                "Êtes-vous sûr de vouloir supprimer votre compte ?"
+              }
+            />
+          )}
         </div>
-      </section>
-      {openModal && (
-        <Delete
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          handleDelete={handleDelete}
-          confirmationMessage={
-            "Êtes-vous sûr de vouloir supprimer votre compte ?"
-          }
-        />
+      ) : (
+        <Home />
       )}
-    </div>
+    </>
   );
 }
