@@ -8,7 +8,18 @@ app.use(express.static("public"));
 
 const cors = require("cors");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [process.env.FRONTEND_URL],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: [
+      "Access-Control-Allow-Origin",
+      "Content-Type",
+      "Authorization",
+    ],
+  })
+);
 /* ************************************************************************* */
 
 app.use(express.json());
