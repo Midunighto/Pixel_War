@@ -42,8 +42,6 @@ function App() {
           setStoredUser(userData);
           Cookies.set("tokenClient", JSON.stringify(userData), { expires: 1 });
         } catch (err) {
-          setStoredUser(false);
-          Cookies.remove("tokenClient");
           console.error(err);
         } finally {
           setIsLoading(false);
