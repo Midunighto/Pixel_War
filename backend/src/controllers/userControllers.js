@@ -143,7 +143,7 @@ const refreshToken = async (req, res) => {
       httpOnly: true,
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
-      Secure: true,
+      secure: true,
     });
     res.json(result);
   } catch (err) {

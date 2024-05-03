@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const cookieUser = Cookies.get("userToken");
+      const cookieUser = Cookies.get("tokenClient");
       if (cookieUser) {
         setStoredUser(JSON.parse(cookieUser));
         setIsLoading(false);
@@ -40,10 +40,10 @@ function App() {
           const userData = { id, pseudo, theme, email, isAdmin };
 
           setStoredUser(userData);
-          Cookies.set("userToken", JSON.stringify(userData), { expires: 1 });
+          Cookies.set("tokenClient", JSON.stringify(userData), { expires: 1 });
         } catch (err) {
           setStoredUser(false);
-          Cookies.remove("userToken");
+          Cookies.remove("tokenClient");
           console.error(err);
         } finally {
           setIsLoading(false);
