@@ -8,13 +8,7 @@ app.use(express.static("public"));
 
 const cors = require("cors");
 
-app.use(
-  cors({
-    origin: [process.env.FRONTEND_URL],
-    credentials: true,
-  })
-);
-
+app.use(cors());
 /* ************************************************************************* */
 
 app.use(express.json());
@@ -32,6 +26,7 @@ app.use("/api", router);
 const port = process.env.SOCKET_PORT;
 const http = require("http");
 const socketIo = require("socket.io");
+const { allow } = require("joi");
 const server = http.createServer(app);
 
 // Configure CORS for Socket.IO

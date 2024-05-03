@@ -144,7 +144,6 @@ const refreshToken = async (req, res) => {
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
       Secure: true,
-      path: "/",
     });
     res.json(result);
   } catch (err) {
@@ -159,7 +158,6 @@ const logout = async (req, res, next) => {
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
       secure: true,
-      path: "/",
     });
     res.sendStatus(200);
   } catch (err) {
