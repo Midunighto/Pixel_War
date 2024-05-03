@@ -43,6 +43,7 @@ function App() {
           Cookies.set("tokenClient", JSON.stringify(userData), { expires: 1 });
         } catch (err) {
           console.error(err);
+          setStoredUser(false); // Ajout de cette ligne
         } finally {
           setIsLoading(false);
         }
