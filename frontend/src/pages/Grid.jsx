@@ -105,6 +105,8 @@ export default function Grid() {
   /* CHRONO STATE */
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [chronoMsg, setChronoMsg] = useState("");
+
   /* DESSIN STATE */
   const [pen, setPen] = useState(false);
   const [eraser, setEraser] = useState(false);
@@ -154,11 +156,14 @@ export default function Grid() {
       setStartTime(new Date().getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
-        const elapsedTime = new Date() - startTime;
-        setElapsedTime(elapsedTime);
-        if (elapsedTime >= 10800000) {
+        const elapsedTime = new Date().getTime() - startTime;
+        const remainingTime = 10800000 - elapsedTime;
+        if (remainingTime <= 0) {
           setStop(true);
-          setElatsedTime(startTime + 10800000);
+          setElapsedTime(0);
+          setChronoMsg("Temps écoulé");
+        } else {
+          setElapsedTime(remainingTime);
         }
       }, 1000);
 
@@ -553,7 +558,7 @@ export default function Grid() {
         <div className="grid-area-container">
           <div className="game-wrapper">
             <div className="chrono-container">
-              <p>{formatTime(elapsedTime)}</p>
+              <p>{stop ? chronoMsg : formatTime(elapsedTime)}</p>
             </div>
             <p className="message">{message}</p>
             <div className="canva-container">
