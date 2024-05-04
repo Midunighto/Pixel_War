@@ -21,6 +21,7 @@ import infoW from "../assets/info-white.svg";
 import infoB from "../assets/info-black.svg";
 import PixelInfo from "../components/PixelInfo";
 import { success } from "../services/toast";
+
 /* import { UWebSocket } from "../utils/Uwebsocket"; */
 
 export default function Grid() {
@@ -502,30 +503,33 @@ export default function Grid() {
     setClickX(x);
     setClickY(y);
 
-    if (stop === false) {
-      if (pen || activePenBonus.some((value) => value)) {
-        handleAddPixel(x, y);
-      } else if (eraser || activeBomb.some((value) => value)) {
-        handleErasePixel(x, y);
-      } else {
-        const pixel = grid.find(
-          (p) => p.x_coordinate === x && p.y_coordinate === y
-        );
-        if (pixel) {
-          if (
-            pixelInfos.pseudo === pixel.user_pseudo &&
-            pixelInfos.createdAt === pixel.created_at
-          ) {
-            setPixelInfos({ pseudo: null, createdAt: null });
-            setShowPixelInfos(false);
-          } else {
-            setPixelInfos({
-              pseudo: pixel.user_pseudo,
-              createdAt: pixel.created_at,
-            });
-            setShowPixelInfos(true);
-          }
+    if ((pen || activePenBonus.some((value) => value)) && stop === false) {
+      handleAddPixel(x, y);
+    } else if (
+      (eraser || activeBomb.some((value) => value)) &&
+      stop === false
+    ) {
+      handleErasePixel(x, y);
+    } else {
+      const pixel = grid.find(
+        (p) => p.x_coordinate === x && p.y_coordinate === y
+      );
+      if (pixel) {
+        if (
+          pixelInfos.pseudo === pixel.user_pseudo &&
+          pixelInfos.createdAt === pixel.created_at
+        ) {
+          setPixelInfos({ pseudo: null, createdAt: null });
+          setShowPixelInfos(false);
+        } else {
+          setPixelInfos({
+            pseudo: pixel.user_pseudo,
+            createdAt: pixel.created_at,
+          });
+          setShowPixelInfos(true);
         }
+      } else {
+        setShowPixelInfos(false);
       }
     }
   };
