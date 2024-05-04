@@ -40,7 +40,11 @@ function App() {
           const userData = { id, pseudo, theme, email, isAdmin };
 
           setStoredUser(userData);
-          Cookies.set("tokenClient", JSON.stringify(userData), { expires: 1 });
+          Cookies.set("tokenClient", JSON.stringify(userData), {
+            expires: 1,
+            sameSite: "none",
+            secure: true,
+          });
         } catch (err) {
           console.error(err);
           setStoredUser(false); // Ajout de cette ligne
