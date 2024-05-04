@@ -56,6 +56,10 @@ export default function SignUp() {
       error("Le mot de passe doit contenir au moins 8 caractères");
       return;
     }
+    if (user.pwd.length > 20) {
+      error("Le mot de passe doit faire 20 caractères maximum");
+      return;
+    }
     if (!document.getElementById("use").checked) {
       error("Merci d'accepter les conditions d'utilisation");
       return;
