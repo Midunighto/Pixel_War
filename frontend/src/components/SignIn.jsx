@@ -50,7 +50,12 @@ export default function SignIn() {
       if (res.status === 200) {
         setStoredUser(res.data.user);
 
-        Cookies.set("user", JSON.stringify(res.data.user), { expires: 7 });
+        Cookies.set("tokenClient", JSON.stringify(res.data.user), {
+          expires: 1,
+          sameSite: "none",
+          secure: true,
+          path: "/",
+        });
         toggleModal();
         success("Connexion réussie !");
       }
