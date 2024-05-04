@@ -597,8 +597,12 @@ export default function Grid() {
                 {isHovered && (
                   <div className="hovered">
                     <ul>
-                      <li>Gagne 1 bombe tous les 20 pixels placés</li>
-                      <li>Gagne 1 pinceau double toutes les 10 minutes</li>
+                      <li>
+                        Tous les 20 pixels: <em>gagne 1 bombe</em>{" "}
+                      </li>
+                      <li>
+                        Toutes les 2min: <em>gagne 1 pinceau double</em>
+                      </li>
                     </ul>
                     <p>
                       ⚠️ Si tu quittes cette page tu perdras tes bonus en cours

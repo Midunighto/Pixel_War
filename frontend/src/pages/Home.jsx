@@ -125,8 +125,8 @@ export default function Home({ theme, defaultTheme }) {
             <div className="rules bonus2">
               <h2>Bonus création</h2>
               <p>
-                Gagne un pinceau utilisable 5 fois, qui double tes pixels, 1
-                fois toutes les 2 minutes
+                Toutes les 2 minutes, gagne un pinceau qui double tes pixels,
+                utilisable 5 fois, pour créer plus vite
               </p>
             </div>
           </section>
