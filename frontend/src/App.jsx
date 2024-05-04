@@ -44,7 +44,6 @@ function App() {
             expires: 1,
             sameSite: "none",
             secure: true,
-            path: "/",
           });
         } catch (err) {
           console.error(err);
