@@ -119,8 +119,8 @@ const login = async (req, res, next) => {
     res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 10 * 24 * 60 * 60 * 1000,
-      sameSite: "none",
       secure: true,
+      path: "/",
     });
 
     res.json({ user, userToken });
@@ -130,33 +130,22 @@ const login = async (req, res, next) => {
 };
 
 const refreshToken = async (req, res) => {
-  const { userToken } = req.cookies;
-  if (!userToken) {
-    return res.status(403).send("Token non fourni");
-  }
-
-  const decoded = jwt.decode(userToken);
-  const { id } = decoded;
-
+  const { id } = req.decoded;
   try {
     const result = await tables.user.read(id);
     if (!result) {
-      return res.status(401).send("Unauthorized");
+      res.status(404).send("No user found");
     }
-
     delete result.password;
-
-    const newToken = jwt.sign({ id }, process.env.APP_SECRET, {
+    const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
       expiresIn: "3h",
     });
-
-    res.cookie("userToken", newToken, {
+    res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
       secure: true,
     });
-
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
