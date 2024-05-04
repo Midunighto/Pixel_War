@@ -154,7 +154,7 @@ export default function Grid() {
   useEffect(() => {
     if (!startTime) {
       let date = new Date();
-      date.setHours(date.getHours() + 5);
+      date.setHours(date.getHours() - 5);
       setStartTime(date.getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
