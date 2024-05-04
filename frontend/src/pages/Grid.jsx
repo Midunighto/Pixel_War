@@ -159,12 +159,13 @@ export default function Grid() {
     } else if (!stop) {
       const interval = setInterval(() => {
         let now = new Date();
-        now.setHours(now.getHours() - 2);
-        const elapsedTime = date - startTime;
-        const remainingTime = 10800000 - elapsedTime;
+        now.setHours(now.getHours());
+        const elapsedTime = Math.max(0, now.getTime() - startTime);
+        const remainingTime = Math.max(0, 10800000 - elapsedTime);
         if (remainingTime <= 0) {
           setStop(true);
           setElapsedTime(0);
+
           setChronoMsg("Temps écoulé");
         } else {
           setElapsedTime(elapsedTime);
