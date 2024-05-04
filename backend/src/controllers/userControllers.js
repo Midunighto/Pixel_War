@@ -131,7 +131,14 @@ const login = async (req, res, next) => {
 };
 
 const refreshToken = async (req, res) => {
-  const { id } = req.decoded;
+  const { userToken } = req.cookies;
+  if (!userToken) {
+    return res.status(403).send("Token non fourni");
+  }
+
+  const decoded = jwt.decode(userToken);
+  const { id } = decoded;
+
   try {
     const result = await tables.user.read(id);
     if (!result) {
@@ -140,11 +147,11 @@ const refreshToken = async (req, res) => {
 
     delete result.password;
 
-    const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
+    const newToken = jwt.sign({ id }, process.env.APP_SECRET, {
       expiresIn: "3h",
     });
 
-    res.cookie("userToken", userToken, {
+    res.cookie("userToken", newToken, {
       httpOnly: true,
       maxAge: 3 * 60 * 60 * 1000,
       sameSite: "none",
