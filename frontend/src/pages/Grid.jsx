@@ -154,11 +154,12 @@ export default function Grid() {
   useEffect(() => {
     if (!startTime) {
       let date = new Date();
-      date.setHours(date.getHours() - 5);
+      let offsetInMs = date.getTimezoneOffset() * 60 * 1000;
+      date = new Date(date.getTime() - offsetInMs - 2 * 60 * 60 * 1000);
       setStartTime(date.getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
-        const elapsedTime = date - startTime;
+        const elapsedTime = new Date().getTime() - startTime;
         const remainingTime = 10800000 - elapsedTime;
         if (remainingTime <= 0) {
           setStop(true);
