@@ -54,7 +54,6 @@ export default function SignIn() {
           expires: 1,
           sameSite: "none",
           secure: true,
-          path: "/",
         });
         toggleModal();
         success("Connexion réussie !");
