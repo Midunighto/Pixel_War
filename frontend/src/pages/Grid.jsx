@@ -152,20 +152,22 @@ export default function Grid() {
   }, [id]);
   /* CHRONO */
   useEffect(() => {
-    let date = new Date();
-    date.setHours(date.getHours() - 2);
     if (!startTime) {
+      let date = new Date();
+      date.setHours(date.getHours() - 2);
       setStartTime(date.getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
-        const elapsedTime = date - startTime;
+        let now = new Date();
+        now.setHours(now.getHours() - 2);
+        const elapsedTime = now.getTime() - startTime;
         const remainingTime = 10800000 - elapsedTime;
         if (remainingTime <= 0) {
           setStop(true);
           setElapsedTime(0);
           setChronoMsg("Temps écoulé");
         } else {
-          setElapsedTime(remainingTime);
+          setElapsedTime(elapsedTime);
         }
       }, 1000);
 

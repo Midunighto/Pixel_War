@@ -198,27 +198,45 @@ export default function CommunityGrids() {
                       <p>Fermée</p>
                     ) : (
                       <p>
-                        {`Temps restant: ${Math.floor(
-                          Math.max(
-                            0,
-                            3 -
-                              (Date.now() -
-                                new Date(grid.creation_time).getTime() +
-                                2 * 3600000) /
-                                3600000
+                        {`Temps restant: ${
+                          Math.floor(
+                            Math.max(
+                              0,
+                              3 -
+                                (Date.now() -
+                                  new Date(grid.creation_time).getTime() +
+                                  2 * 3600000) /
+                                  3600000
+                            )
+                          ) +
+                          Math.floor(
+                            Math.round(
+                              (Math.max(
+                                0,
+                                3 -
+                                  (Date.now() -
+                                    new Date(grid.creation_time).getTime() +
+                                    2 * 3600000) /
+                                    3600000
+                              ) %
+                                1) *
+                                60
+                            ) / 60
                           )
-                        )}h${Math.round(
-                          (Math.max(
-                            0,
-                            3 -
-                              (Date.now() -
-                                new Date(grid.creation_time).getTime() +
-                                2 * 3600000) /
-                                3600000
-                          ) %
-                            1) *
-                            60
-                        )}`}
+                        }h${
+                          Math.round(
+                            (Math.max(
+                              0,
+                              3 -
+                                (Date.now() -
+                                  new Date(grid.creation_time).getTime() +
+                                  2 * 3600000) /
+                                  3600000
+                            ) %
+                              1) *
+                              60
+                          ) % 60
+                        }`}
                       </p>
                     )}
                   </div>
