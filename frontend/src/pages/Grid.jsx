@@ -166,7 +166,7 @@ export default function Grid() {
           setElapsedTime(0);
           setChronoMsg("Temps écoulé");
         } else {
-          remainingTime += 4 * 60 * 60 * 1000; // Ajouter 2 heures à remainingTime
+          remainingTime -= 2 * 60 * 60 * 1000; // Ajouter 2 heures à remainingTime
           setElapsedTime(remainingTime);
         }
       }, 1000);
