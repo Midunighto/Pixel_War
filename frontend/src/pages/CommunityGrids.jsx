@@ -13,6 +13,7 @@ import bucket from "../assets/paint-bucket.svg";
 import blackbucket from "../assets/paint-bucket-black.svg";
 
 import "../styles/community-grids.scss";
+
 export default function CommunityGrids() {
   const { storedUser } = useStoredUser();
   const [grids, setGrids] = useState([]);
