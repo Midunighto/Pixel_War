@@ -6,6 +6,7 @@ import Canvas from "../components/Canvas";
 import Home from "./Home";
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
+import { error } from "../services/toast";
 
 import { useStoredUser } from "../contexts/UserContext";
 import "../styles/my-grids.scss";
@@ -39,6 +40,9 @@ export default function MyGrids() {
               return { ...grid, pixels: pixelsResponse.data };
             } catch (err) {
               console.error(err);
+              error(
+                "Nous n'avous pas réussi à charger les données, essayez de rafraîchir la page"
+              );
 
               return { ...grid, pixels: [] };
             }

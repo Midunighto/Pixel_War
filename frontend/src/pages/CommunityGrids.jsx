@@ -6,6 +6,7 @@ import Canvas from "../components/Canvas";
 import Loader from "../components/Loader";
 import Searchbar from "../components/Searchbar";
 import { useNavigate } from "react-router-dom";
+import { error } from "../services/toast";
 
 import { useStoredUser } from "../contexts/UserContext";
 
@@ -52,7 +53,9 @@ export default function CommunityGrids() {
               return { ...grid, pixels: pixelsResponse.data };
             } catch (err) {
               console.error(err);
-
+              error(
+                "Nous n'avous pas réussi à charger les données, essayez de rafraîchir la page"
+              );
               return { ...grid, pixels: [] };
             }
           }
