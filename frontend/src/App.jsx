@@ -36,11 +36,9 @@ function App() {
             }
           );
 
-          const { id, pseudo, theme, email, isAdmin } = res.data;
-          const userData = { id, pseudo, theme, email, isAdmin };
-
-          setStoredUser(userData);
-          Cookies.set("tokenClient", JSON.stringify(userData), {
+          setStoredUser(res.data);
+          console.log("userData", res.data);
+          Cookies.set("tokenClient", JSON.stringify(res.data), {
             expires: 1,
             sameSite: "none",
             secure: true,

@@ -49,7 +49,7 @@ export default function SignIn() {
 
       if (res.status === 200) {
         setStoredUser(res.data.user);
-
+        console.log(res.data.user);
         Cookies.set("tokenClient", JSON.stringify(res.data.user), {
           expires: 1,
           sameSite: "none",
@@ -60,7 +60,7 @@ export default function SignIn() {
       }
     } catch (err) {
       console.error(err);
-
+      console.log("erreur");
       if (err.response) {
         if (err.response.status === 422) {
           error("Mot de passe incorrect");
