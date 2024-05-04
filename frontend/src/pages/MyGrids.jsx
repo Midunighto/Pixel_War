@@ -152,7 +152,9 @@ export default function MyGrids() {
                         handleCanvasClick={() => navigate(`/grid/${grid.id}`)}
                       />
                       <div className="grid-foil">
-                        {(Date.now() - new Date(grid.creation_time).getTime()) /
+                        {(Date.now() -
+                          new Date(grid.creation_time).getTime() +
+                          2 * 3600000) /
                           3600000 >
                         3 ? (
                           <p>Fermée</p>
@@ -163,7 +165,8 @@ export default function MyGrids() {
                                 0,
                                 3 -
                                   (Date.now() -
-                                    new Date(grid.creation_time).getTime()) /
+                                    new Date(grid.creation_time).getTime() +
+                                    2 * 3600000) /
                                     3600000
                               )
                             )}h${Math.round(
@@ -171,7 +174,8 @@ export default function MyGrids() {
                                 0,
                                 3 -
                                   (Date.now() -
-                                    new Date(grid.creation_time).getTime()) /
+                                    new Date(grid.creation_time).getTime() +
+                                    2 * 3600000) /
                                     3600000
                               ) %
                                 1) *
@@ -187,7 +191,8 @@ export default function MyGrids() {
                           onClick={() => navigate(`/grid/${grid.id}`)}
                         >
                           {(Date.now() -
-                            new Date(grid.creation_time).getTime()) /
+                            new Date(grid.creation_time).getTime() +
+                            2 * 3600000) /
                             3600000 >
                           3
                             ? "Voir"
