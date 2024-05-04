@@ -121,7 +121,6 @@ const login = async (req, res, next) => {
       maxAge: 10 * 24 * 60 * 60 * 1000,
       sameSite: "none",
       secure: true,
-      path: "/",
     });
 
     res.json({ user, userToken });
