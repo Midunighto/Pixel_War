@@ -156,7 +156,7 @@ export default function Grid() {
       setStartTime(new Date().getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
-        const elapsedTime = new Date().getTime() - startTime - 18000000;
+        const elapsedTime = new Date().getTime() - startTime + 18000000;
         const remainingTime = 10800000 - elapsedTime;
         if (remainingTime <= 0) {
           setStop(true);
