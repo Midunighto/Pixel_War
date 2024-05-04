@@ -153,10 +153,12 @@ export default function Grid() {
   /* CHRONO */
   useEffect(() => {
     if (!startTime) {
-      setStartTime(new Date().getTime());
+      let date = new Date();
+      date.setHours(date.getHours() + 5);
+      setStartTime(date.getTime());
     } else if (!stop) {
       const interval = setInterval(() => {
-        const elapsedTime = new Date().getTime() - startTime + 18000000;
+        const elapsedTime = new Date().getTime() - startTime;
         const remainingTime = 10800000 - elapsedTime;
         if (remainingTime <= 0) {
           setStop(true);
