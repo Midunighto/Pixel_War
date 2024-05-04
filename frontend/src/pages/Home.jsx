@@ -119,14 +119,14 @@ export default function Home({ theme, defaultTheme }) {
               <h2>Bonus destruction</h2>
               <p>
                 Gagne une grenade tous les 20 pixels placés pour pouovoir
-                détruire 1 pixel adverse !
+                détruire 1 pixel adverse
               </p>
             </div>
             <div className="rules bonus2">
               <h2>Bonus création</h2>
               <p>
                 Gagne un pinceau utilisable 5 fois, qui double tes pixels, 1
-                fois toutes les 10 minutes !
+                fois toutes les 2 minutes
               </p>
             </div>
           </section>

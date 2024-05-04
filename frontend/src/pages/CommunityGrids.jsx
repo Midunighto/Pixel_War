@@ -139,7 +139,7 @@ export default function CommunityGrids() {
             <h1>Grilles de la communauté</h1>
             <p>
               Retrouve ici les grilles créées par les autres joueurs de la
-              communauté Pixel Wars !
+              communauté Pixel War
             </p>
             <div className="row">
               {storedUser && (

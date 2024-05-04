@@ -185,7 +185,7 @@ export default function Grid() {
         setPenBonusUses((prevPenBonusUses) => [...prevPenBonusUses, 5]);
         return newPenBonus;
       });
-    }, 600000); // 60000 ms = 1 min
+    }, 12000); // 60000 ms = 1 min
 
     return () => clearInterval(interval);
   }, []);
