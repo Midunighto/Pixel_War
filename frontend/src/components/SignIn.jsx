@@ -52,8 +52,6 @@ export default function SignIn() {
         console.log(res.data.user);
         Cookies.set("tokenClient", JSON.stringify(res.data.user), {
           expires: 1,
-          sameSite: "none",
-          secure: true,
         });
         toggleModal();
         success("Connexion réussie !");

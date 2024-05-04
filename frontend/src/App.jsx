@@ -40,8 +40,6 @@ function App() {
           console.log("userData", res.data);
           Cookies.set("tokenClient", JSON.stringify(res.data), {
             expires: 1,
-            sameSite: "none",
-            secure: true,
           });
         } catch (err) {
           console.error(err);
