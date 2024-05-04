@@ -7,13 +7,13 @@ const checkToken = async (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(userToken, process.env.APP_SECRET);
-    req.decoded = { id: decoded.id };
-    return next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      /* on passe à refreshtoken */
+    if (decoded) {
+      req.decoded = { id: decoded.id };
       return next();
     }
+    res.clearCookie("userToken");
+    return res.status(403).json({ error: "Token invalide" });
+  } catch (error) {
     res.clearCookie("userToken");
     return res.status(403).json({ error: "Token invalide" });
   }
