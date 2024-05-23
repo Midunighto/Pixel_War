@@ -47,6 +47,7 @@ function App() {
 
     fetchUser();
   }, []);
+
   useEffect(() => {
     theme === 2
       ? document.body.classList.add("light")

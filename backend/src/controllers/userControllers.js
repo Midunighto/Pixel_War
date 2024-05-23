@@ -109,20 +109,20 @@ const destroy = async (req, res, next) => {
 
 // LOGIN
 const login = async (req, res, next) => {
+  console.log("Login function called");
+  console.log("req.user:", req.user); // Add this line
   try {
     const { user } = req;
 
-    await tables.user.updateLastLog(user.id);
-
     const userToken = jwt.sign({ id: user.id }, process.env.APP_SECRET);
-
     res.cookie("userToken", userToken, {
       httpOnly: true,
       maxAge: 10 * 24 * 60 * 60 * 1000,
+      sameSite: "None",
       secure: true,
     });
-
-    res.json({ user, userToken });
+    console.log("Cookie userToken set:", userToken); // Log to confirm cookie is set
+    res.json({ user });
   } catch (err) {
     next(err);
   }
@@ -133,16 +133,16 @@ const refreshToken = async (req, res) => {
   try {
     const result = await tables.user.read(id);
     if (!result) {
-      res.status(404).send("No user found");
+      return res.status(404).send("No user found");
     }
     delete result.password;
-    const userToken = jwt.sign({ id }, process.env.APP_SECRET, {
-      expiresIn: "3h",
+    const userToken = jwt.sign({ id: result.id }, process.env.APP_SECRET, {
+      expiresIn: "10d",
     });
     res.cookie("userToken", userToken, {
       httpOnly: true,
-      maxAge: 3 * 60 * 60 * 1000,
-      sameSite: "none",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      sameSite: "None",
       secure: true,
     });
     res.json(result);
@@ -153,12 +153,7 @@ const refreshToken = async (req, res) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie("userToken", {
-      httpOnly: true,
-      maxAge: 3 * 60 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
-    });
+    res.clearCookie("userToken");
     res.sendStatus(200);
   } catch (err) {
     next(err);

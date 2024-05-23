@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const checkToken = async (req, res, next) => {
   const { userToken } = req.cookies;
+  console.log("Received cookie:", userToken); // Log to check received cookie
   if (!userToken) {
     return res.status(403).send("Token non fourni");
   }
