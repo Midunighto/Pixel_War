@@ -50,9 +50,9 @@ export default function SignIn() {
       if (res.status === 200) {
         setStoredUser(res.data.user);
         console.log(res.data.user);
-        Cookies.set("tokenClient", JSON.stringify(res.data.user), {
-          expires: 1,
-        });
+        // Cookies.set("tokenClient", JSON.stringify(res.data.user), {
+        //   expires: 1,
+        // });
         toggleModal();
         success("Connexion réussie !");
       }
@@ -72,7 +72,6 @@ export default function SignIn() {
       setIsLoading(false);
     }
   };
-
   if (storedUser) {
     return <Navigate to="/" />;
   }

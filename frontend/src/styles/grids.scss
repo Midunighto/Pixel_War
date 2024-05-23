@@ -131,6 +131,11 @@
             width: fit-content;
             text-wrap: nowrap;
           }
+          canvas {
+            &:hover {
+              transform: scale(1.02);
+            }
+          }
         }
         .bonus {
           position: absolute;

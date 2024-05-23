@@ -13,7 +13,7 @@ function ProtectedRoute() {
         withCredentials: true,
       })
       .catch((err) => {
-        Cookies.remove("userToken");
+        /*         Cookies.remove("userToken"); */
         navigate("/", { replace: true });
         error("Une erreur est survenue, merci de vous reconnecter");
         console.error(err);

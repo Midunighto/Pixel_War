@@ -130,7 +130,7 @@ export default function Account() {
         withCredentials: true,
       });
 
-      Cookies.remove("tokenClient");
+      /*   Cookies.remove("tokenClient"); */
       setStoredUser(null);
       navigate("/");
     } catch (err) {

@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { useModal } from "../contexts/ModalContext";
-import { useStoredUser } from "../contexts/UserContext";
+import React from "react";
 
-import { error, success } from "../services/toast";
+import { success } from "../services/toast";
 
 import Button from "./Button";
 

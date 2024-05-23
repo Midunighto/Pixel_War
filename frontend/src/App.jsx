@@ -23,11 +23,7 @@ function App() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const cookieUser = Cookies.get("tokenClient");
-      if (cookieUser) {
-        setStoredUser(JSON.parse(cookieUser));
-        setIsLoading(false);
-      } else if (storedUser !== false) {
+      if (storedUser !== false) {
         try {
           const res = await axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/api/protected`,
@@ -38,9 +34,6 @@ function App() {
 
           setStoredUser(res.data);
           console.log("userData", res.data);
-          Cookies.set("tokenClient", JSON.stringify(res.data), {
-            expires: 1,
-          });
         } catch (err) {
           console.error(err);
           setStoredUser(false); // Ajout de cette ligne
@@ -54,7 +47,6 @@ function App() {
 
     fetchUser();
   }, []);
-
   useEffect(() => {
     theme === 2
       ? document.body.classList.add("light")
