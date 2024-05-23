@@ -45,22 +45,18 @@ const router = createBrowserRouter([
         path: "/terms",
         element: <Terms />,
       },
+
       {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "/account",
-            element: <Account />,
-          },
-          {
-            path: "/my-grids",
-            element: <MyGrids />,
-          },
-          {
-            path: "/29119510",
-            element: <Admin />,
-          },
-        ],
+        path: "/account",
+        element: <Account />,
+      },
+      {
+        path: "/my-grids",
+        element: <MyGrids />,
+      },
+      {
+        path: "/29119510",
+        element: <Admin />,
       },
     ],
   },
