@@ -13,6 +13,7 @@ import "../styles/auth.scss";
 import "../styles/modals.scss";
 import Button from "../components/Button";
 import SignIn from "../components/SignIn";
+import Loader from "../components/Loader";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ export default function SignUp() {
         user,
         {
           withCredentials: true,
-          timeout: 15000, // Définit un délai d'attente de 15 secondes
+          timeout: 15000,
         }
       );
       if (res.status === 201) {
@@ -107,7 +108,7 @@ export default function SignUp() {
         <section className="signup-container">
           <div className="wrapper">
             <h1>Créer un Compte</h1>
-
+            {isLoading && <Loader />}
             <form
               className="auth"
               onSubmit={handleRealSubmit}
