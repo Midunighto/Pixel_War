@@ -71,6 +71,7 @@ export default function SignUp() {
         user,
         {
           withCredentials: true,
+          timeout: 15000, // Définit un délai d'attente de 15 secondes
         }
       );
       if (res.status === 201) {
@@ -79,7 +80,11 @@ export default function SignUp() {
         toggleModal();
       }
     } catch (err) {
-      if (err.response) {
+      if (err.code === "ECONNABORTED") {
+        alert(
+          "Un problème de connexion avec la base de données est survenu, merci de tenter d'afficher la page Grilles de la communauté avant de réessayer"
+        );
+      } else if (err.response) {
         if (err.response.status === 409) {
           error("L'email ou le pseudo existe déjà");
         }
