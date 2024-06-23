@@ -38,7 +38,8 @@ export default function CommunityGrids() {
       try {
         setLoading(true);
         const gridsResponseData = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/grids/`
+          `${import.meta.env.VITE_BACKEND_URL}/api/grids/`,
+          { timeout: 15000 }
         );
 
         const gridsWithPixelsPromises = gridsResponseData.data.map(
@@ -47,15 +48,14 @@ export default function CommunityGrids() {
               const pixelsResponse = await axios.get(
                 `${import.meta.env.VITE_BACKEND_URL}/api/grids/${
                   grid.id
-                }/pixels/`
+                }/pixels/`,
+                { timeout: 15000 }
               );
 
               return { ...grid, pixels: pixelsResponse.data };
             } catch (err) {
               console.error(err);
-              error(
-                "Nous n'avous pas réussi à charger les données, essayez de rafraîchir la page"
-              );
+
               return { ...grid, pixels: [] };
             }
           }
@@ -67,6 +67,11 @@ export default function CommunityGrids() {
         setDataLoaded(true);
       } catch (err) {
         console.error(err);
+        if (err.code === "ECONNABORTETD") {
+          error(
+            "Nous n'avous pas réussi à charger les données, essayez de rafraîchir la page"
+          );
+        }
       } finally {
         setLoading(false);
       }
